@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h1> 식당 목록 </h1>
+<form action-'/order' method='post'>
+  <input name='name' placeholder = "Name" type = "text"></input>
+  <select name = 'cafeteria'>
+    <option disabled selected value = "">식당</option>
+    <option value="학생">학생 식당</option>
+    <option value="교직원">교직원 식당</option>
+  </select>
+  <input type="submit" value="register"></input>
+</form>

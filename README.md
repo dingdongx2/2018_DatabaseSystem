@@ -9,3 +9,4 @@ Modelingtool : Erwin 9.4 -> navicat
 
 .
 URL : resource's location
+https://www.navicat.com/manual/online_manual/en/navicat/win_manual/#/cover

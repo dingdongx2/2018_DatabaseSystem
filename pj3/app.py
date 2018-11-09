@@ -77,11 +77,17 @@ def portal(sid):
     # conn.close()
     with open('students.csv','r',encoding='utf-8') as f:
         rdr = csv.reader(f)
-        tmp = 0
+        # tmp = 0
         for line in rdr:
-            if line[0].startswith(sid):
+            if line[0].startswith("admin"):
+                with open('contacts.csv','r',encoding='utf-8') as c:
+                    cc = csv.reader(c)
+                    return render_template("portal_admin.html", stu_data = line, con_data = cc)
+
+                # return render_template("portal_admin.html", stu_data = line)
+            elif line[0].startswith(sid):
                 return render_template("portal.html", stu_data = line)
-    render_template("error.html",msg="error01")
+    return render_template("error.html",msg="error01")
     # return render_template("portal.html", stu_data = rows[0])
 
 @app.route("/<sid>/credits")

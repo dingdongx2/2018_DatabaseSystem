@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block body %}
-<h1>환영합니다! {{ stu_data['sname'] }}님!</h1>
+<!-- <h1>환영합니다! {{ stu_data['sname'] }}님!</h1> -->
+<h1>환영합니다! {{ stu_data[2] }}님!</h1>
 
 <table>
   <tr>
@@ -26,10 +27,16 @@
     </th>
   </tr>
   <tr>
-    {% for item in stu_data %}
+    <!-- {% for item in stu_data %} -->
     <!-- <td>{{ stu_data['sid'] }}</td> -->
-    <td>{{ item }}</td>
-    {% endfor %}
+    <!-- <td>{{ item }}</td> -->
+    <!-- {% endfor %} -->
+
+    <td>{{ stu_data[0] }}</td>
+    <td>{{ stu_data[2] }}</td>
+    <td>{{ stu_data[4] }}</td>
+    <td>{{ stu_data[6] }}</td>
+    <td>{{ stu_data[5] }}</td>
   </tr>
 </table>
 
@@ -37,10 +44,12 @@
   <h3>학생 메뉴</h3>
   <ul>
     <li>
-      <a href='/{{ stu_data["sid"] }}/credits'>성적 보기</a>
+      <!-- <a href='/{{ stu_data["sid"] }}/credits'>성적 보기</a> -->
+      <a href='/{{ stu_data[0] }}/credits'>성적 보기</a>
     </li>
     <li>
-      <a href='/{{ stu_data["sid"] }}/mail'>메일함</a>
+      <!-- <a href='/{{ stu_data["sid"] }}/mail'>메일함</a> -->
+      <a href='/{{ stu_data[0] }}/mail'>메일함</a>
     </li>
   </ul>
 </div>

@@ -19,3 +19,4 @@ sid,password,sname,sex,major_id,tutor_id,grade
 2014019493     ,zerozero       ,임지훈,male  ,17,2001032003     ,1
 2014040404     ,donkey         ,권지현,female,22,2001032053     ,1
 2014505050     ,hellobaby      ,권희조,female,44,2001032078     ,1
+admin          ,admin          ,admin,admin,0,admin          ,0

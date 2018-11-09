@@ -4,12 +4,14 @@
 {% endblock %}
 
 {% block body %}
-<form action="/admin/contacts/edit" method="post">
+<form action="/admin" method="post">
   <div class="form-group">
     <input autocomplete="off" autofocus class="form-control" name="sid" placeholder="Username" type="text" value="{{ con_data[0] }}">
     <input autocomplete="off" autofocus class="form-control" name="phone_num" placeholder="PhoneNumber" type="text" value="{{ con_data[1] }}">
     <input autocomplete="off" autofocus class="form-control" name="email" placeholder="Email" type="text" value="{{ con_data[2] }}">
   </div>
+<!-- </form> -->
+<!-- <form action="/admin" method="post"> -->
   <div class="btn-group">
     <button class="btn btn-primary" type="submit" name="save" value="save">Save</button>
     <button class="btn btn-danger" type="submit" name="delete" value="delete">Delete</button>

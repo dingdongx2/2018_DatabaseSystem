@@ -8,23 +8,6 @@ import csv
 
 app = Flask(__name__)
 
-# db_connect = pg.connect(
-# # conn_str = pg.connect(
-# # conn_str = pg_connection.connection(
-#     dbname="soyoung",
-#     user = "soyoung",
-#     host = "127.0.0.1",
-#     password = "soyoung"
-# )
-
-# conn_str = "dbname=soyoung"
-
-# with open('students.csv','r',encoding='utf-8') as f:
-#     rdr = csv.reader(f)
-#     for line in rdr:
-#         print(line)
-#     print('//')
-
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -44,37 +27,22 @@ def login():
                 return redirect(f"/{sid}")
                 tmp = line[1]
                 print("exists")
-        return render_template("error.html",msg="Wrong ID/Password")
-        # tmp = line[1] for line in rdr if line[0]==sid
-        # print(tmp)
+    return render_template("error.html",msg="Wrong ID/Password")
 
-    # conn = pg.connect(conn_str)
-    # cur = conn.cursor()
-    # sql = f"SELECT sid, password FROM students WHERE sid='{sid}'"
-    # print(sql)
-
-    # cur.execute(sql) #sql execute
-    # rows = cur.fetchall()
-    # if(len(rows)!=1):
-    #     return render_template('error.html',msg="Wrong ID")
-    #
-    # print(rows[0])
-    # conn.close()
-    # print("=======================")
-    # print(f"{sid}, {passwd}")
-    # print("=======================")
-    # return redirect(f"/{sid}")
-
-@app.route("/<sid>")
+@app.route("/<sid>", methods=['POST','GET'])
 def portal(sid):
-    # conn = pg.connect(conn_str)
-    # cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) #결과물이 딕셔너리 형태로
-    # sql = f"select sid, sname, major_id, grade, tutor_id from students where sid='{sid}'"
-
-    # print(sql)
-    # cur.execute(sql)
-    # rows = cur.fetchall()
-    # conn.close()
+    if request.method == 'POST':
+        get_sid = request.form.get('sid')
+        get_phone_num = request.form.get('phone_num')
+        get_email = request.form.get('email')
+        # get_save = request.form.get('save')
+        # get_delete = request.form.get('delete')
+        print(get_sid, get_phone_num, get_email)
+        if request.form.get('save'):
+            print("save!")
+        elif request.form.get('delete'):
+            print("delete!")
+    
     with open('students.csv','r',encoding='utf-8') as f:
         rdr = csv.reader(f)
         # tmp = 0
@@ -102,7 +70,8 @@ def edit(sid):
         for line in rdr:
             if line[1]==phoneNum:
                 return render_template("edit.html", con_data=line)
-    return render_template("error.html",msg="error02")
+    # return render_template("error.html",msg="error02")
+    return render_template("portal.html")
 
 @app.route("/<sid>/credits")
 def credits(sid):

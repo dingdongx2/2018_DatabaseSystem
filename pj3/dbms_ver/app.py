@@ -1,4 +1,4 @@
-# MANAGEMENT DATA THROUGH FILE
+# MANAGEMENT DATA THROUGH DB
 
 from flask import Flask, render_template, redirect, request
 import psycopg2 as pg

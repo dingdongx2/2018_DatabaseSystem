@@ -82,6 +82,7 @@ def portal(sid):
             if line[0].startswith("admin"):
                 with open('contacts.csv','r',encoding='utf-8') as c:
                     cc = csv.reader(c)
+                    next(cc)
                     return render_template("portal_admin.html", stu_data = line, con_data = cc)
 
                 # return render_template("portal_admin.html", stu_data = line)
@@ -89,6 +90,19 @@ def portal(sid):
                 return render_template("portal.html", stu_data = line)
     return render_template("error.html",msg="error01")
     # return render_template("portal.html", stu_data = rows[0])
+
+@app.route("/<sid>/contacts/edit",methods=['POST', 'GET'])
+def edit(sid):
+    phoneNum = request.form.get('phone-num')
+    print("phone number:",phoneNum)
+
+    with open('contacts.csv','r',encoding='utf-8') as c:
+        rdr = csv.reader(c)
+        next(rdr)
+        for line in rdr:
+            if line[1]==phoneNum:
+                return render_template("edit.html", con_data=line)
+    return render_template("error.html",msg="error02")
 
 @app.route("/<sid>/credits")
 def credits(sid):

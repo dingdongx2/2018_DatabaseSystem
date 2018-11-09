@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ stu_data['sid'] }}
+{% endblock %}
+
+{% block body %}
+<h1>환영합니다! {{ stu_data['sname'] }}님!</h1>
+
+<table>
+  <tr>
+    <th>
+      학번
+    </th>
+    <th>
+      이름
+    </th>
+    <th>
+      전공
+    </th>
+    <th>
+      학년
+    </th>
+    <th>
+      지도교수
+    </th>
+  </tr>
+  <tr>
+    {% for item in stu_data %}
+    <!-- <td>{{ stu_data['sid'] }}</td> -->
+    <td>{{ item }}</td>
+    {% endfor %}
+  </tr>
+</table>
+
+<div>
+  <h3>학생 메뉴</h3>
+  <ul>
+    <li>
+      <a href='/{{ stu_data["sid"] }}/credits'>성적 보기</a>
+    </li>
+    <li>
+      <a href='/{{ stu_data["sid"] }}/mail'>메일함</a>
+    </li>
+  </ul>
+</div>
+
+{% endblock %}

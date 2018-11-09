@@ -35,14 +35,34 @@ def portal(sid):
         get_sid = request.form.get('sid')
         get_phone_num = request.form.get('phone_num')
         get_email = request.form.get('email')
-        # get_save = request.form.get('save')
-        # get_delete = request.form.get('delete')
         print(get_sid, get_phone_num, get_email)
         if request.form.get('save'):
+            with open('contacts.csv','r') as f:
+                rdr = csv.reader(f)
+                new_lines = []
+                for line in rdr:
+                    print(line)
+                    if line[1]!=get_phone_num:
+                        new_lines.append(line)
+                    else:
+                        new_lines.append([get_sid,get_phone_num,get_email])
+            with open('contacts.csv','w') as f:
+                w = csv.writer(f, delimiter=',')
+                w.writerows(new_lines)
             print("save!")
+
         elif request.form.get('delete'):
+            with open('contacts.csv','r') as f:
+                rdr = csv.reader(f)
+                new_lines = []
+                for line in rdr:
+                    if line[1]!=get_phone_num:
+                        new_lines.append(line)
+            with open('contacts.csv','w') as f:
+                w = csv.writer(f, delimiter=',')
+                w.writerows(new_lines)
             print("delete!")
-    
+
     with open('students.csv','r',encoding='utf-8') as f:
         rdr = csv.reader(f)
         # tmp = 0

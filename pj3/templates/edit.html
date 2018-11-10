@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block body %}
-<form action="/admin" method="POST">
+<form action="/{{ sid }}" method="POST">
   <div class="form-group">
     {% for item in head %}
       <input autocomplete="off" autofocus class="form-control" name="{{ item }}" placeholder="{{ item }}" type="text" value="{{ con_data[loop.index-1] }}">

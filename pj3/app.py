@@ -35,41 +35,6 @@ def login():
 def portal(sid):
     if request.method == 'POST':
         option(request.form, sid)
-        # get_sid = request.form.get('sid')
-        # get_phone_num = request.form.get('phone')
-        # get_email = request.form.get('email')
-        # print("after info : ",get_sid, get_phone_num, get_email)
-        # if request.form.get('save'):
-        #     with open('contacts.csv','r') as f:
-        #         rdr = csv.reader(f)
-        #         new_lines = []
-        #         for line in rdr:
-        #             if line[1]!=get_phone_num:
-        #                 new_lines.append(line)
-        #             else:
-        #                 new_lines.append([get_sid,get_phone_num,get_email])
-        #     with open('contacts.csv','w') as f:
-        #         w = csv.writer(f, delimiter=',')
-        #         w.writerows(new_lines)
-        #     print("save!")
-        #
-        # elif request.form.get('delete'):
-        #     with open('contacts.csv','r') as f:
-        #         rdr = csv.reader(f)
-        #         new_lines = []
-        #         for line in rdr:
-        #             if line[1]!=get_phone_num:
-        #                 new_lines.append(line)
-        #     with open('contacts.csv','w') as f:
-        #         w = csv.writer(f, delimiter=',')
-        #         w.writerows(new_lines)
-        #     print("delete!")
-        #
-        # elif request.form.get('add'):
-        #     print(get_sid,get_phone_num,get_email)
-        #     new_lines = [get_sid+'\t',get_phone_num,get_email]
-        #     with open('contacts.csv','a') as f:
-        #         f.write(','.join(new_lines)+'\n')
 
     with open('students.csv','r',encoding='utf-8') as f:
         rdr = csv.reader(f)
@@ -101,7 +66,7 @@ def edit(sid):
             next(rdr)
             for line in rdr:
                 if line[1]==phoneNum:
-                    return render_template("edit.html", con_data=line, head=head[0:3])
+                    return render_template("edit.html", con_data=line, head=head[0:3], sid=sid)
     # students
     else:
         if phoneNum==None:
@@ -117,7 +82,7 @@ def edit(sid):
             userCon = csv.reader(userC)
             for line in userCon:
                 if line[1].replace(' ','')==phoneNum.replace(' ',''):
-                    return render_template("edit.html", con_data=line, head=head)
+                    return render_template("edit.html", con_data=line, head=head, sid=sid)
 
     return render_template("error.html",msg="error02")
 

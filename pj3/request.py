@@ -14,7 +14,7 @@ def option(Form, sid):
     info.append(get_sid)
     info.append(get_phone_num)
     info.append(get_email)
-    if sid.startswith("admin"):
+    if not sid.startswith("admin"):
         get_pos = Form.get(head[3])
         info.append(get_pos)
     print("after info : ",get_sid, get_phone_num, get_email)

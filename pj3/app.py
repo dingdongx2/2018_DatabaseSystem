@@ -39,9 +39,9 @@ def portal(sid):
         print(sid)
 
         get_sid = request.form.get('sid')
-        get_phone_num = request.form.get('phone_num')
+        get_phone_num = request.form.get('phone')
         get_email = request.form.get('email')
-        print("after info",get_sid, get_phone_num, get_email)
+        print("after info : ",get_sid, get_phone_num, get_email)
         # print("\n\n"+phoneNum)
         if request.form.get('save'):
             with open('contacts.csv','r') as f:
@@ -70,6 +70,7 @@ def portal(sid):
             print("delete!")
 
         elif request.form.get('add'):
+            print(get_sid,get_phone_num,get_email)
             new_lines = [get_sid+'\t',get_phone_num,get_email]
             with open('contacts.csv','a') as f:
                 f.write(','.join(new_lines)+'\n')

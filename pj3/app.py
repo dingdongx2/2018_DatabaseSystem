@@ -6,7 +6,7 @@ import psycopg2.extras
 import psycopg2.extensions
 import csv
 from form import contactsForm
-from request import option
+from request import option, start
 
 app = Flask(__name__)
 
@@ -78,15 +78,8 @@ def edit(sid):
     else:
         if phoneNum==None:
             return render_template("add.html", head=head, owner=sid)
-        print("sid:~~~~\n\n\n",sid)
-        if sid.startswith("2009003125"): contacts_name = "Grass_corp.csv"
-        elif sid.startswith("2013004394"): contacts_name = "Fire_corp.csv"
-        elif sid.startswith("2014005004"): contacts_name = "Water_corp.csv"
-        else: contacts_name = None
-        print("\n\n\n\ncontacts_name:",contacts_name)
-        print("sid:",sid)
 
-        with open(contacts_name,'r',encoding='utf-8') as userC:
+        with open(start(sid),'r',encoding='utf-8') as userC:
             userCon = csv.reader(userC)
             for line in userCon:
                 if line[1].replace(' ','')==phoneNum.replace(' ',''):
@@ -104,12 +97,8 @@ def contacts(sid):
                 with open('contacts.csv','r',encoding='utf-8') as c:
                     cc = csv.reader(c)
                     next(cc)
-                    if sid.startswith("2009003125"): contacts_name = "Grass_corp.csv"
-                    elif sid.startswith("2013004394"): contacts_name = "Fire_corp.csv"
-                    elif sid.startswith("2014005004"): contacts_name = "Water_corp.csv"
-                    else: contacts_name = None
 
-                    with open(contacts_name, 'r', encoding='utf-8') as userC:
+                    with open(start(sid), 'r', encoding='utf-8') as userC:
                         userCon = csv.reader(userC)
                         line[0]=line[0].replace(' ','')
                         head = ["sid","phone","email","position","Edit/Delete"]

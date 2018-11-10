@@ -96,3 +96,10 @@ def addRequest(info, sid):
         else: contacts_name = None
         with open(contacts_name,'a') as f:
             f.write(','.join(info)+'\n')
+
+def start(sid):
+    if sid.startswith("2009003125"): contacts_name = "Grass_corp.csv"
+    elif sid.startswith("2013004394"): contacts_name = "Fire_corp.csv"
+    elif sid.startswith("2014005004"): contacts_name = "Water_corp.csv"
+    else: contacts_name = None
+    return contacts_name

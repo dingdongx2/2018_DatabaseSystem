@@ -6,9 +6,9 @@
 {% block body %}
 <form action="/admin" method="POST">
   <div class="form-group">
-    <input autocomplete="off" autofocus class="form-control" name="sid" placeholder="Username" type="text">
-    <input autocomplete="off" autofocus class="form-control" name="phone_num" placeholder="PhoneNumber" type="text">
-    <input autocomplete="off" autofocus class="form-control" name="email" placeholder="Email" type="text">
+    {% for item in head %}
+      <input autocomplete="off" autofocus class="form-control" name="{{ item }}" placeholder="{{ item }}" type="text">
+    {% endfor %}
   </div>
 <!-- </form> -->
 <!-- <form action="/admin" method="post"> -->

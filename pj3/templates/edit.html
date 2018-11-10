@@ -6,9 +6,9 @@
 {% block body %}
 <form action="/admin" method="POST">
   <div class="form-group">
-    <input autocomplete="off" autofocus class="form-control" name="sid" placeholder="Username" type="text" value="{{ con_data[0] }}">
-    <input autocomplete="off" autofocus class="form-control" name="phone_num" placeholder="PhoneNumber" type="text" value="{{ con_data[1] }}">
-    <input autocomplete="off" autofocus class="form-control" name="email" placeholder="Email" type="text" value="{{ con_data[2] }}">
+    {% for item in head %}
+      <input autocomplete="off" autofocus class="form-control" name="{{ item }}" placeholder="{{ item }}" type="text" value="{{ con_data[loop.index-1] }}">
+    {% endfor %}
   </div>
 <!-- </form> -->
 <!-- <form action="/admin" method="post"> -->

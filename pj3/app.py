@@ -94,28 +94,33 @@ def portal(sid):
 def edit(sid):
     phoneNum = request.args.get('phone-num')
     print("phone number:",phoneNum)
-
-    if phoneNum==None:
-        return render_template("add.html")
+    head = ["sid","phone","email","position"]
 
     if sid.startswith("admin"):
+        if phoneNum==None:
+            return render_template("add.html", head=head[0:3])
         with open('contacts.csv','r',encoding='utf-8') as c:
             rdr = csv.reader(c)
             next(rdr)
             for line in rdr:
                 if line[1]==phoneNum:
-                    return render_template("edit.html", con_data=line)
+                    return render_template("edit.html", con_data=line, head=head[0:3])
+    # students
     else:
+        if phoneNum==None:
+            return render_template("add.html", head=head)
         if sid.startswith("2009003125"): contacts_name = "Grass_corp.csv"
         elif sid.startswith("2013004394"): contacts_name = "Fire_corp.csv"
         elif sid.startswith("2014005004"): contacts_name = "Water_corp.csv"
         else: contacts_name = None
+        print("\n\n\n\ncontacts_name:",contacts_name)
+        print("sid:",sid)
 
         with open(contacts_name,'r',encoding='utf-8') as userC:
             userCon = csv.reader(userC)
             for line in userCon:
-                if line[1]==phoneNum:
-                    return render_template("edit.html", con_data=line)
+                if line[1].replace(' ','')==phoneNum.replace(' ',''):
+                    return render_template("edit.html", con_data=line, head=head)
 
     return render_template("error.html",msg="error02")
 

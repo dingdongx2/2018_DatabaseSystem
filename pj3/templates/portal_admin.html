@@ -1,29 +1,37 @@
 {% extends "layout.html" %}
 
 {% block title %}
-{{ stu_data['sid'] }}
+ADMIN
 {% endblock %}
 
 {% block body %}
-<h1>환영합니다! {{ stu_data[2] }}님!</h1>
-
-<table>
-  <tr>
-    {% for item in head %}
-      <th> {{ item }} </th>
-    {% endfor %}
-  </tr>
-  <tr>
-    <td>{{ stu_data[0] }}</td>
-    <td>{{ stu_data[2] }}</td>
-    <td>{{ stu_data[4] }}</td>
-    <td>{{ stu_data[6] }}</td>
-    <td>{{ stu_data[5] }}</td>
-  </tr>
-</table>
+<h1>ADMIN page</h1>
 
 <div>
-  <h3>관리자 메뉴</h3>
+  <h3>학생 리스트</h3>
+  <table>
+    <tr>
+      {% for item in context[0] %}
+        <th> {{ item }}</th>
+      {% endfor %}
+    </tr>
+    {% for student in students %}
+    <tr>
+      {% for i in [0,1,2,3,4,5] %}
+        <td>{{ student[i] }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+  <form action="/admin/contacts/edit" method="GET">
+    <div class="btn-group">
+      <button class="btn btn-info">+Add New Contact</button>
+    </div>
+  </form>
+</div>
+
+<div>
+  <h3>학생 주소록</h3>
   <table>
     <tr>
       {% for item in head2 %}
@@ -36,7 +44,7 @@
       <td>{{ item[1] }}</td>
       <td>{{ item[2] }}</td>
       <td>
-        <form action="/{{ stu_data[2] }}/contacts/edit" method="GET">
+        <form action="/admin/contacts/edit" method="GET">
           <div class="btn-group">
             <button type="submit" name="phone-num" value= "{{ item[1] }}" class="btn btn-primary modify">EDIT</button>
           </div>
@@ -52,13 +60,13 @@
   </form>
   <ul>
     <li>
-      <a href='/{{ stu_data[0] }}/count'>도메인 통계</a>
+      <a href='/admin/count'>도메인 통계</a>
     </li>
     <li>
-      <a href='/{{ stu_data[0] }}/credits'>성적 보기</a>
+      <a href='/admin/credits'>성적 보기</a>
     </li>
     <li>
-      <a href='/{{ stu_data[0] }}/mail'>메일함</a>
+      <a href='/admin/mail'>메일함</a>
     </li>
   </ul>
 </div>

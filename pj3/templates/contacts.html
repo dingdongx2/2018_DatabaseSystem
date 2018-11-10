@@ -11,15 +11,9 @@
   <h3>HY-in 주소록</h3>
   <table>
     <tr>
-      <th>
-        sid
-      </th>
-      <th>
-        phone
-      </th>
-      <th>
-        email
-      </th>
+      {% for item in head %}
+        <th> {{ item }} </th>
+      {% endfor %}
     </tr>
     {% for item in con_data %}
     <tr>
@@ -33,21 +27,9 @@
   <h3>개인 주소록</h3>
   <table>
     <tr>
-      <th>
-        sid
-      </th>
-      <th>
-        phone
-      </th>
-      <th>
-        email
-      </th>
-      <th>
-        position
-      </th>
-      <th>
-        Edit/Delete
-      </th>
+      {% for item in head2 %}
+        <th> {{ item }} </th>
+      {% endfor %}
     </tr>
     {% for item in user_data %}
     <tr>

@@ -98,12 +98,25 @@ def edit(sid):
     if phoneNum==None:
         return render_template("add.html")
 
-    with open('contacts.csv','r',encoding='utf-8') as c:
-        rdr = csv.reader(c)
-        next(rdr)
-        for line in rdr:
-            if line[1]==phoneNum:
-                return render_template("edit.html", con_data=line)
+    if sid.startswith("admin"):
+        with open('contacts.csv','r',encoding='utf-8') as c:
+            rdr = csv.reader(c)
+            next(rdr)
+            for line in rdr:
+                if line[1]==phoneNum:
+                    return render_template("edit.html", con_data=line)
+    else:
+        if sid.startswith("2009003125"): contacts_name = "Grass_corp.csv"
+        elif sid.startswith("2013004394"): contacts_name = "Fire_corp.csv"
+        elif sid.startswith("2014005004"): contacts_name = "Water_corp.csv"
+        else: contacts_name = None
+
+        with open(contacts_name,'r',encoding='utf-8') as userC:
+            userCon = csv.reader(userC)
+            for line in userCon:
+                if line[1]==phoneNum:
+                    return render_template("edit.html", con_data=line)
+
     return render_template("error.html",msg="error02")
 
 @app.route("/<sid>/contacts")
@@ -122,7 +135,8 @@ def contacts(sid):
 
                     with open(contacts_name, 'r', encoding='utf-8') as userC:
                         userCon = csv.reader(userC)
-                        return render_template("contacts.html", stu_data = line, con_data = cc, user_data = userCon)
+                        head = ["sid","phone","email","position","Edit/Delete"]
+                        return render_template("contacts.html", stu_data = line, con_data = cc, user_data = userCon, head=head[0:3], head2=head)
     return render_template("error.html",msg="error03")
 
 @app.route("/<sid>/credits")

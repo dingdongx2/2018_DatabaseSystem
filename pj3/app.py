@@ -106,6 +106,18 @@ def edit(sid):
                 return render_template("edit.html", con_data=line)
     return render_template("error.html",msg="error02")
 
+@app.route("/<sid>/contacts")
+def contacts(sid):
+    with open('students.csv','r',encoding='utf-8') as f:
+        rdr = csv.reader(f)
+        for line in rdr:
+            if line[0].startswith(sid):
+                with open('contacts.csv','r',encoding='utf-8') as c:
+                    cc = csv.reader(c)
+                    next(cc)
+                    return render_template("contacts.html", stu_data = line, con_data = cc)
+    return render_template("error.html",msg="error03")
+
 @app.route("/<sid>/credits")
 def credits(sid):
     conn = pg.connect(conn_str)

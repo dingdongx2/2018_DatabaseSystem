@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ stu_data['sid'] }}
+{% endblock %}
+
+{% block body %}
+<h1>{{ stu_data[2] }}의 주소록</h1>
+
+<div>
+  <h3>HY 메뉴</h3>
+  <table>
+    <tr>
+      <th>
+        sid
+      </th>
+      <th>
+        phone
+      </th>
+      <th>
+        emal
+      </th>
+      <th>
+        edit/delete
+      </th>
+    </tr>
+    {% for item in con_data %}
+    <tr>
+      <td>{{ item[0] }}</td>
+      <td>{{ item[1] }}</td>
+      <td>{{ item[2] }}</td>
+      <td>
+        <form action="/{{ stu_data[2] }}/contacts" method="GET">
+        <!-- <form action="/admin/contacts/edit" method="POST"> -->
+          <div class="btn-group">
+            <button type="submit" name="phone-num" value= "{{ item[1] }}" class="btn btn-primary modify">EDIT</button>
+          </div>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <form action="/{{ stu_data[2] }}/contacts" method="GET">
+    <div class="btn-group">
+      <button class="btn btn-info">+Add New Contact</button>
+    </div>
+  </form>
+  <ul>
+    <li>
+      <!-- <a href='/{{ stu_data["sid"] }}/credits'>성적 보기</a> -->
+      <a href='/{{ stu_data[0] }}/credits'>성적 보기</a>
+    </li>
+    <li>
+      <!-- <a href='/{{ stu_data["sid"] }}/mail'>메일함</a> -->
+      <a href='/{{ stu_data[0] }}/mail'>메일함</a>
+    </li>
+  </ul>
+</div>
+
+{% endblock %}

@@ -115,7 +115,14 @@ def contacts(sid):
                 with open('contacts.csv','r',encoding='utf-8') as c:
                     cc = csv.reader(c)
                     next(cc)
-                    return render_template("contacts.html", stu_data = line, con_data = cc)
+                    if sid.startswith("2009003125"): contacts_name = "Grass_corp.csv"
+                    elif sid.startswith("2013004394"): contacts_name = "Fire_corp.csv"
+                    elif sid.startswith("2014005004"): contacts_name = "Water_corp.csv"
+                    else: contacts_name = None
+
+                    with open(contacts_name, 'r', encoding='utf-8') as userC:
+                        userCon = csv.reader(userC)
+                        return render_template("contacts.html", stu_data = line, con_data = cc, user_data = userCon)
     return render_template("error.html",msg="error03")
 
 @app.route("/<sid>/credits")

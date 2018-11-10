@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{% endblock %}
+
+{% block body %}
+<form action="/admin" method="POST">
+  <div class="form-group">
+    <input autocomplete="off" autofocus class="form-control" name="sid" placeholder="Username" type="text">
+    <input autocomplete="off" autofocus class="form-control" name="phone_num" placeholder="PhoneNumber" type="text">
+    <input autocomplete="off" autofocus class="form-control" name="email" placeholder="Email" type="text">
+  </div>
+<!-- </form> -->
+<!-- <form action="/admin" method="post"> -->
+  <div class="btn-group">
+    <button class="btn btn-primary" type="submit" name="add" value="save">Save</button>
+    <button class="btn btn-danger" type="submit" name="cancel" value="cancel">Cancel</button>
+  </div>
+</form>
+
+{% endblock %}

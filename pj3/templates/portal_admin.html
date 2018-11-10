@@ -20,6 +20,13 @@ ADMIN
       {% for i in [0,1,2,3,4,5] %}
         <td>{{ student[i] }}</td>
       {% endfor %}
+      <td>
+        <form action="/admin/contacts/edit" method="GET">
+          <div class="btn-group">
+            <button type="submit" name="sid" value= "item[0]" class="btn btn-primary modify">EDIT</button>
+          </div>
+        </form>
+      </td>
     </tr>
     {% endfor %}
   </table>
@@ -34,7 +41,7 @@ ADMIN
   <h3>학생 주소록</h3>
   <table>
     <tr>
-      {% for item in head2 %}
+      {% for item in context[1] %}
         <th> {{ item }}</th>
       {% endfor %}
     </tr>

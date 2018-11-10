@@ -37,14 +37,9 @@ def portal(sid):
     print("sid:",sid)
     if sid=="admin":
         print("admin\n\n")
-        head0 = ["학번","이름","비밀번호","전공","학년","지도교수"]
-        head = ["학번","이름","전공","학년","지도교수"]
+        head1 = ["학번","비밀번호","이름","전공","학년","지도교수","edit/delete"]
         head2= ["sid","phone","email","edit/delete"]
-        context = [head0,head,head2]
-        # with open('students.csv','r',encoding='utf-8') as f:
-        #     rdr = csv.reader(f)
-        #     for line in rdr:
-        #         if line[0].startswith("admin"):
+        context = [head1,head2]
         with open('students.csv','r',encoding='utf-8') as f:
             rdr = csv.reader(f)
             next(rdr)
@@ -52,11 +47,10 @@ def portal(sid):
             for line in rdr:
                 line[0].replace(' ','')
                 students.append(line)
-            print(students)
             with open('contacts.csv','r',encoding='utf-8') as c:
                 cc = csv.reader(c)
                 next(cc)
-                return render_template("portal_admin.html", con_data = cc, head=head, head2=head2, context=context, students=students)
+                return render_template("portal_admin.html", con_data = cc, context=context, students=students)
     else:
         with open('students.csv','r',encoding='utf-8') as f:
             rdr = csv.reader(f)

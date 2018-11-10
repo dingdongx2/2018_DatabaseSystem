@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{% endblock %}
+
+{% block body %}
+<h1>Domain Count</h1>
+<div>
+  <table>
+    <tr>
+      {% for item in head %}
+        <th> {{ item }}</th>
+      {% endfor %}
+    </tr>
+    {% for item in cnt_data %}
+    <tr>
+      <td> {{ item[0] }} </td>
+      <td> {{ item[1] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+
+{% endblock %}

@@ -105,6 +105,27 @@ def contacts(sid):
                         return render_template("contacts.html", stu_data = line, con_data = cc, user_data = userCon, head=head[0:3], head2=head)
     return render_template("error.html",msg="error03")
 
+@app.route("/<sid>/count")
+def count(sid):
+    head = ["domain_name","count"]
+    with open('contacts.csv','r') as f:
+        rdr = csv.reader(f)
+        next(rdr)
+        dic = {}
+        for line in rdr:
+            tmp = line[2].split('@')
+            if len(tmp)==2:
+                # print(tmp[0],tmp[1])
+                if tmp[1] in dic.items():
+                    dic[tmp[1]]+=1
+                else:
+                    dic[tmp[1]]=1
+        domains = []
+        for x,y in list(dic.items()):
+            domains.append([x,y])
+        print(domains)
+    return render_template("count.html",head=head,cnt_data=domains)
+
 @app.route("/<sid>/credits")
 def credits(sid):
     conn = pg.connect(conn_str)

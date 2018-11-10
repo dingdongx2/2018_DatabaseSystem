@@ -9,21 +9,9 @@
 
 <table>
   <tr>
-    <th>
-      학번
-    </th>
-    <th>
-      이름
-    </th>
-    <th>
-      전공
-    </th>
-    <th>
-      학년
-    </th>
-    <th>
-      지도교수
-    </th>
+    {% for item in head %}
+      <th> {{ item }} </th>
+    {% endfor %}
   </tr>
   <tr>
     <td>{{ stu_data[0] }}</td>
@@ -38,18 +26,9 @@
   <h3>관리자 메뉴</h3>
   <table>
     <tr>
-      <th>
-        sid
-      </th>
-      <th>
-        phone
-      </th>
-      <th>
-        emal
-      </th>
-      <th>
-        edit/delete
-      </th>
+      {% for item in head2 %}
+        <th> {{ item }}</th>
+      {% endfor %}
     </tr>
     {% for item in con_data %}
     <tr>

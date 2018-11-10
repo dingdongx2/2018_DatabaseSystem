@@ -21,8 +21,6 @@ def login():
 
     with open('students.csv','r',encoding='utf-8') as f:
         rdr = csv.reader(f)
-        # for line in rdr:
-        #     print(line)
         tmp = "none"
         for line in rdr:
             if line[0].startswith(sid) and line[1].startswith(passwd):
@@ -36,21 +34,30 @@ def portal(sid):
     if request.method == 'POST':
         option(request.form, sid)
 
-    with open('students.csv','r',encoding='utf-8') as f:
-        rdr = csv.reader(f)
-        # tmp = 0
-        for line in rdr:
-            if line[0].startswith("admin"):
-                with open('contacts.csv','r',encoding='utf-8') as c:
-                    cc = csv.reader(c)
-                    next(cc)
-                    return render_template("portal_admin.html", stu_data = line, con_data = cc)
-
-                # return render_template("portal_admin.html", stu_data = line)
-            elif line[0].startswith(sid):
-                return render_template("portal.html", stu_data = line)
+    print("sid:",sid)
+    if sid=="admin":
+        print("admin\n\n")
+        with open('students.csv','r',encoding='utf-8') as f:
+            rdr = csv.reader(f)
+            for line in rdr:
+                if line[0].startswith("admin"):
+                    with open('contacts.csv','r',encoding='utf-8') as c:
+                        cc = csv.reader(c)
+                        next(cc)
+                        line[0] = line[0].replace(' ','')
+                        return render_template("portal_admin.html", stu_data = line, con_data = cc)
+    else:
+        with open('students.csv','r',encoding='utf-8') as f:
+            rdr = csv.reader(f)
+            for line in rdr:
+                if line[0].startswith(sid):
+                    with open('contacts.csv','r',encoding='utf-8') as c:
+                        cc = csv.reader(c)
+                        next(cc)
+                        line[0] = line[0].replace(' ','')
+                        print("???:",line)
+                        return render_template("portal.html", stu_data = line, con_data = cc)
     return render_template("error.html",msg="error01")
-    # return render_template("portal.html", stu_data = rows[0])
 
 @app.route("/<sid>/contacts/edit",methods=['GET','POST'])
 def edit(sid):
@@ -71,6 +78,7 @@ def edit(sid):
     else:
         if phoneNum==None:
             return render_template("add.html", head=head, owner=sid)
+        print("sid:~~~~\n\n\n",sid)
         if sid.startswith("2009003125"): contacts_name = "Grass_corp.csv"
         elif sid.startswith("2013004394"): contacts_name = "Fire_corp.csv"
         elif sid.startswith("2014005004"): contacts_name = "Water_corp.csv"
@@ -88,6 +96,7 @@ def edit(sid):
 
 @app.route("/<sid>/contacts")
 def contacts(sid):
+    print(sid,"~\n\n\n")
     with open('students.csv','r',encoding='utf-8') as f:
         rdr = csv.reader(f)
         for line in rdr:
@@ -102,6 +111,7 @@ def contacts(sid):
 
                     with open(contacts_name, 'r', encoding='utf-8') as userC:
                         userCon = csv.reader(userC)
+                        line[0]=line[0].replace(' ','')
                         head = ["sid","phone","email","position","Edit/Delete"]
                         return render_template("contacts.html", stu_data = line, con_data = cc, user_data = userCon, head=head[0:3], head2=head)
     return render_template("error.html",msg="error03")

@@ -63,7 +63,7 @@
       <td>{{ item[1] }}</td>
       <td>{{ item[2] }}</td>
       <td>
-        <form action="/{{ stu_data[2] }}/contacts/edit" method="POST">
+        <form action="/{{ stu_data[2] }}/contacts/edit" method="GET">
         <!-- <form action="/admin/contacts/edit" method="POST"> -->
           <div class="btn-group">
             <button type="submit" name="phone-num" value= "{{ item[1] }}" class="btn btn-primary modify">EDIT</button>
@@ -73,7 +73,7 @@
     </tr>
     {% endfor %}
   </table>
-  <form action="/admin/contacts/edit" method="post">
+  <form action="/admin/contacts/edit" method="GET">
     <div class="btn-group">
       <button class="btn btn-info">+Add New Contact</button>
     </div>

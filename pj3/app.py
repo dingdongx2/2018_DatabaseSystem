@@ -5,6 +5,7 @@ import psycopg2 as pg
 import psycopg2.extras
 import psycopg2.extensions
 import csv
+from form import contactsForm
 
 app = Flask(__name__)
 
@@ -32,16 +33,21 @@ def login():
 @app.route("/<sid>", methods=['POST','GET'])
 def portal(sid):
     if request.method == 'POST':
+        print("change happend\n")
+        print("=========== request url\n",request.url)
+        print("=========== request url2\n",request.args.get('phone-num'))
+        print(sid)
+
         get_sid = request.form.get('sid')
         get_phone_num = request.form.get('phone_num')
         get_email = request.form.get('email')
-        print(get_sid, get_phone_num, get_email)
+        print("after info",get_sid, get_phone_num, get_email)
+        # print("\n\n"+phoneNum)
         if request.form.get('save'):
             with open('contacts.csv','r') as f:
                 rdr = csv.reader(f)
                 new_lines = []
                 for line in rdr:
-                    # print(line)
                     if line[1]!=get_phone_num:
                         new_lines.append(line)
                     else:
@@ -63,6 +69,11 @@ def portal(sid):
                 w.writerows(new_lines)
             print("delete!")
 
+        elif request.form.get('add'):
+            new_lines = [get_sid+'\t',get_phone_num,get_email]
+            with open('contacts.csv','a') as f:
+                f.write(','.join(new_lines)+'\n')
+
     with open('students.csv','r',encoding='utf-8') as f:
         rdr = csv.reader(f)
         # tmp = 0
@@ -79,17 +90,13 @@ def portal(sid):
     return render_template("error.html",msg="error01")
     # return render_template("portal.html", stu_data = rows[0])
 
-@app.route("/<sid>/contacts/edit",methods=['POST', 'GET'])
+@app.route("/<sid>/contacts/edit",methods=['GET','POST'])
 def edit(sid):
-    # if request.method == 'POST':
-    #     print('post\n\n')
-    # if request.method == 'GET':
-    #     phoneNum = request.args.get('phone-num')
-    #     print("phone number:",phoneNum)
-    phoneNum = request.form.get('phone-num')
+    phoneNum = request.args.get('phone-num')
     print("phone number:",phoneNum)
+
     if phoneNum==None:
-        return render_template("edit.html", con_data=[None,None,None])
+        return render_template("add.html")
 
     with open('contacts.csv','r',encoding='utf-8') as c:
         rdr = csv.reader(c)
@@ -98,7 +105,6 @@ def edit(sid):
             if line[1]==phoneNum:
                 return render_template("edit.html", con_data=line)
     return render_template("error.html",msg="error02")
-    # return render_template("portal.html")
 
 @app.route("/<sid>/credits")
 def credits(sid):

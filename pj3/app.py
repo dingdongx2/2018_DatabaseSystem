@@ -6,6 +6,7 @@ import psycopg2.extras
 import psycopg2.extensions
 import csv
 from form import contactsForm
+from request import option
 
 app = Flask(__name__)
 
@@ -33,47 +34,42 @@ def login():
 @app.route("/<sid>", methods=['POST','GET'])
 def portal(sid):
     if request.method == 'POST':
-        print("change happend\n")
-        print("=========== request url\n",request.url)
-        print("=========== request url2\n",request.args.get('phone-num'))
-        print(sid)
-
-        get_sid = request.form.get('sid')
-        get_phone_num = request.form.get('phone')
-        get_email = request.form.get('email')
-        print("after info : ",get_sid, get_phone_num, get_email)
-        # print("\n\n"+phoneNum)
-        if request.form.get('save'):
-            with open('contacts.csv','r') as f:
-                rdr = csv.reader(f)
-                new_lines = []
-                for line in rdr:
-                    if line[1]!=get_phone_num:
-                        new_lines.append(line)
-                    else:
-                        new_lines.append([get_sid,get_phone_num,get_email])
-            with open('contacts.csv','w') as f:
-                w = csv.writer(f, delimiter=',')
-                w.writerows(new_lines)
-            print("save!")
-
-        elif request.form.get('delete'):
-            with open('contacts.csv','r') as f:
-                rdr = csv.reader(f)
-                new_lines = []
-                for line in rdr:
-                    if line[1]!=get_phone_num:
-                        new_lines.append(line)
-            with open('contacts.csv','w') as f:
-                w = csv.writer(f, delimiter=',')
-                w.writerows(new_lines)
-            print("delete!")
-
-        elif request.form.get('add'):
-            print(get_sid,get_phone_num,get_email)
-            new_lines = [get_sid+'\t',get_phone_num,get_email]
-            with open('contacts.csv','a') as f:
-                f.write(','.join(new_lines)+'\n')
+        option(request.form, sid)
+        # get_sid = request.form.get('sid')
+        # get_phone_num = request.form.get('phone')
+        # get_email = request.form.get('email')
+        # print("after info : ",get_sid, get_phone_num, get_email)
+        # if request.form.get('save'):
+        #     with open('contacts.csv','r') as f:
+        #         rdr = csv.reader(f)
+        #         new_lines = []
+        #         for line in rdr:
+        #             if line[1]!=get_phone_num:
+        #                 new_lines.append(line)
+        #             else:
+        #                 new_lines.append([get_sid,get_phone_num,get_email])
+        #     with open('contacts.csv','w') as f:
+        #         w = csv.writer(f, delimiter=',')
+        #         w.writerows(new_lines)
+        #     print("save!")
+        #
+        # elif request.form.get('delete'):
+        #     with open('contacts.csv','r') as f:
+        #         rdr = csv.reader(f)
+        #         new_lines = []
+        #         for line in rdr:
+        #             if line[1]!=get_phone_num:
+        #                 new_lines.append(line)
+        #     with open('contacts.csv','w') as f:
+        #         w = csv.writer(f, delimiter=',')
+        #         w.writerows(new_lines)
+        #     print("delete!")
+        #
+        # elif request.form.get('add'):
+        #     print(get_sid,get_phone_num,get_email)
+        #     new_lines = [get_sid+'\t',get_phone_num,get_email]
+        #     with open('contacts.csv','a') as f:
+        #         f.write(','.join(new_lines)+'\n')
 
     with open('students.csv','r',encoding='utf-8') as f:
         rdr = csv.reader(f)
@@ -99,7 +95,7 @@ def edit(sid):
 
     if sid.startswith("admin"):
         if phoneNum==None:
-            return render_template("add.html", head=head[0:3])
+            return render_template("add.html", head=head[0:3], owner="admin")
         with open('contacts.csv','r',encoding='utf-8') as c:
             rdr = csv.reader(c)
             next(rdr)
@@ -109,7 +105,7 @@ def edit(sid):
     # students
     else:
         if phoneNum==None:
-            return render_template("add.html", head=head)
+            return render_template("add.html", head=head, owner=sid)
         if sid.startswith("2009003125"): contacts_name = "Grass_corp.csv"
         elif sid.startswith("2013004394"): contacts_name = "Fire_corp.csv"
         elif sid.startswith("2014005004"): contacts_name = "Water_corp.csv"

@@ -27,11 +27,6 @@
     </th>
   </tr>
   <tr>
-    <!-- {% for item in stu_data %} -->
-    <!-- <td>{{ stu_data['sid'] }}</td> -->
-    <!-- <td>{{ item }}</td> -->
-    <!-- {% endfor %} -->
-
     <td>{{ stu_data[0] }}</td>
     <td>{{ stu_data[2] }}</td>
     <td>{{ stu_data[4] }}</td>
@@ -43,6 +38,9 @@
 <div>
   <h3>학생 메뉴</h3>
   <ul>
+    <li>
+      <a href='/{{ stu_data[0] }}/contacts'>CONTACTS</a>
+    </li>
     <li>
       <!-- <a href='/{{ stu_data["sid"] }}/credits'>성적 보기</a> -->
       <a href='/{{ stu_data[0] }}/credits'>성적 보기</a>

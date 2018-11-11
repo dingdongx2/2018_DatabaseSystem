@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block body %}
-<form action="/{{ owner }}" method="POST">
+<form action="/admin" method="POST">
   <div class="form-group">
     {% for item in head %}
       <input autocomplete="off" autofocus class="form-control" name="{{ item }}" placeholder="{{ item }}" type="text">

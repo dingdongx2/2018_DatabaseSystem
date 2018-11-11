@@ -5,13 +5,28 @@ import psycopg2.extensions
 import csv
 
 conn_str = "dbname=soyoung"
-conn = pg.connect(conn_str)
-cur = conn.cursor()
+# conn = pg.connect(conn_str)
+# cur = conn.cursor()
 
 def sqlQuery(sql):
+    conn = pg.connect(conn_str)
+    cur = conn.cursor()
     cur.execute(sql)
     # rows = cur.fetchall()
     # print(rows)
+    cur.close()
+    conn.commit()
+
+def sqlQuery_(sql):
+    conn = pg.connect(conn_str)
+    cur = conn.cursor()
+    cur.execute(sql)
+
+    rows = cur.fetchall()
+    print(rows)
+
+    cur.close()
+    conn.commit()
 
 def openCsv(filename, firstline):
     filename = filename + '.csv'
@@ -33,42 +48,41 @@ def openCsv(filename, firstline):
             res.append(tmp)
     return res
 
-
 def putStudents():
     students = openCsv("students",True)
     menu = students[0]
     students = students[1:]
 
-    print("students:",students)
+    # print("students:",students)
     # create table
-    sqlQuery(f"CREATE TABLE students({menu[0]} CHAR(15), {menu[1]} CHAR(15), {menu[2]} CHAR(10), {menu[3]} CHAR(10), {menu[4]} INTEGER, {menu[5]} CHAR(15), {menu[6]} INTEGER);")
+    sql = f"CREATE TABLE students({menu[0]} CHAR(15), {menu[1]} CHAR(15), {menu[2]} CHAR(10), {menu[3]} CHAR(10), {menu[4]} INTEGER, {menu[5]} CHAR(15), {menu[6]} INTEGER);"
+    sqlQuery(sql)
     # insert values
     for student in students:
-        sqlQuery(f"INSERT INTO students VALUES (\'{student[0]}\',\'{student[1]}\',\'{student[2]}\',\'{student[3]}\',{student[4]},\'{student[5]}\',{student[6]});")
+        sql = f"INSERT INTO students VALUES (\'{student[0]}\',\'{student[1]}\',\'{student[2]}\',\'{student[3]}\',{student[4]},\'{student[5]}\',{student[6]});"
+        sqlQuery(sql)
 
-    print("\nSTUDENTS\n")
+    # print("\nSTUDENTS\n")
     sql = f"SELECT * FROM students;"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    print(rows)
+    sqlQuery_(sql)
 
 def putContacts():
     contacts = openCsv("contacts",True)
     menu = contacts[0]
     contacts = contacts[1:]
 
-    print("contacts:",contacts)
+    # print("contacts:",contacts)
     # create table
-    sqlQuery(f"CREATE TABLE contacts({menu[0]} CHAR(15), {menu[1]} CHAR(15), {menu[2]} CHAR(30));")
+    sql = f"CREATE TABLE contacts({menu[0]} CHAR(15), {menu[1]} CHAR(15), {menu[2]} CHAR(30));"
+    sqlQuery(sql)
     # insert values
     for contact in contacts:
-        sqlQuery(f"INSERT INTO contacts VALUES (\'{contact[0]}\',\'{contact[1]}\',\'{contact[2]}\');")
+        sql = f"INSERT INTO contacts VALUES (\'{contact[0]}\',\'{contact[1]}\',\'{contact[2]}\');"
+        sqlQuery(sql)
 
-    print("\nCONTACTS\n")
+    # print("\nCONTACTS\n")
     sql = f"SELECT * FROM contacts;"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    print(rows)
+    sqlQuery_(sql)
 
 putStudents()
 putContacts()

@@ -30,16 +30,6 @@ def login():
     if len(rows)!=1:
         return render_template("error.html", msg="Wrong ID/Password")
 
-    # with open('students.csv','r',encoding='utf-8') as f:
-    #     rdr = csv.reader(f)
-    #     tmp = "none"
-    #     for line in rdr:
-    #         if line[0].startswith(sid) and line[1].startswith(passwd):
-    #             return redirect(f"/{sid}")
-    #             tmp = line[1]
-    #             print("exists")
-    # return render_template("error.html",msg="Wrong ID/Password")
-
 @app.route("/<sid>", methods=['POST','GET'])
 def portal(sid):
     if request.method == 'POST':

@@ -45,8 +45,9 @@ def portal(sid):
             next(rdr)
             students = []
             for line in rdr:
-                line[0].replace(' ','')
+                line[0] = line[0].replace(' ','')
                 students.append(line)
+            print("students!\n\n",students)
             with open('contacts.csv','r',encoding='utf-8') as c:
                 cc = csv.reader(c)
                 next(cc)
@@ -63,6 +64,23 @@ def portal(sid):
                         print("???:",line)
                         return render_template("portal.html", stu_data = line, con_data = cc)
     return render_template("error.html",msg="error01")
+
+# 여기 수정차례
+@app.route("/admin/students/edit",methods=['GET','POST'])
+def s_edit():
+    head = ["sid","password","sname","sex","major_id","tutor_id","grade"]
+    sid = request.args.get('sid')
+    print("sid:",sid,"\n\n\n\n")
+    if sid==None:
+        return render_template("add.html", head=head, owner="admin")
+
+    with open('students.csv','r',encoding='utf-8') as f:
+        rdr = csv.reader(f)
+        next(rdr)
+        for line in rdr:
+            if line[0].replace(' ','') == sid:
+                return render_template("s_edit.html",head=head, con_data=line, sid=sid)
+
 
 @app.route("/<sid>/contacts/edit",methods=['GET','POST'])
 def edit(sid):

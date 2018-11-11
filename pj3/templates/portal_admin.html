@@ -21,16 +21,16 @@ ADMIN
         <td>{{ student[i] }}</td>
       {% endfor %}
       <td>
-        <form action="/admin/contacts/edit" method="GET">
+        <form action="/admin/students/edit" method="GET">
           <div class="btn-group">
-            <button type="submit" name="sid" value= "item[0]" class="btn btn-primary modify">EDIT</button>
+            <button type="submit" name="sid" value= "{{ student[0] }}" class="btn btn-primary modify">EDIT</button>
           </div>
         </form>
       </td>
     </tr>
     {% endfor %}
   </table>
-  <form action="/admin/contacts/edit" method="GET">
+  <form action="/admin/students/edit" method="GET">
     <div class="btn-group">
       <button class="btn btn-info">+Add New Contact</button>
     </div>

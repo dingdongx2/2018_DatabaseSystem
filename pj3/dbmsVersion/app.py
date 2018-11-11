@@ -28,7 +28,7 @@ def login():
     sql = f"SELECT sid, password FROM students WHERE sid='{sid}'"
     rows = sqlQuery_(sql)
     print("rows:",rows)
-    print(rows[0])
+    # print(rows[0])
     # cur.execute(sql)
 
     # rows = cur.fetchall()
@@ -54,20 +54,9 @@ def portal(sid):
         sql = f"SELECT sid,phone,email FROM contacts;"
         cc = sqlQuery_(sql)
 
-        head1 = ["학번","비밀번호","이름","전공","학년","지도교수","edit/delete"]
+        head1 = ["학번","비밀번호","이름","전공","학년","지도교수","성적","edit/delete"]
         head2= ["sid","phone","email","edit/delete"]
         context = [head1,head2]
-        # with open('students.csv','r',encoding='utf-8') as f:
-        #     rdr = csv.reader(f)
-        #     next(rdr)
-        #     students = []
-        #     for line in rdr:
-        #         line[0] = line[0].replace(' ','')
-        #         students.append(line)
-        #     with open('contacts.csv','r',encoding='utf-8') as c:
-        #         cc = csv.reader(c)
-        #         next(cc)
-        #         return render_template("portal_admin.html", con_data = cc, context=context, students=students)
         return render_template("portal_admin.html", con_data = cc, context=context, students=students)
     else:
         # EDIT LATER
@@ -76,20 +65,6 @@ def portal(sid):
 
         sql = f"SELECT sid,phone,email FROM contacts WHERE sid=\'{sid}\';"
         cc = sqlQuery_(sql)
-        # print(sql)
-        # cur.execute(sql)
-
-    #     with open('students.csv','r',encoding='utf-8') as f:
-    #         rdr = csv.reader(f)
-    #         for line in rdr:
-    #             if line[0].startswith(sid):
-    #                 with open('contacts.csv','r',encoding='utf-8') as c:
-    #                     cc = csv.reader(c)
-    #                     next(cc)
-    #                     line[0] = line[0].replace(' ','')
-    #                     print("???:",line)
-    #                     return render_template("portal.html", stu_data = line, con_data = cc)
-    # return render_template("error.html",msg="error01")
         render_template("portal.html", stu_data = line, con_data = cc)
 
 # 여기 수정차례
@@ -97,23 +72,15 @@ def portal(sid):
 def s_edit():
     head = ["sid","password","sname","sex","major_id","tutor_id","grade"]
     sid = request.args.get('sid')
-
-    sid = sid.replace(' ','')
+    # sid = sid.replace(' ','')
     print("sid::::",sid,"/")
     if sid==None:
         return render_template("s_add.html", head=head)
-
+    sid = sid.replace(' ','')
     sql = f"SELECT sid,password,sname,sex,major_id,tutor_id,grade from students WHERE sid=\'{sid}\';"
     line = sqlQuery_(sql)
     line = list(line[0])
     return render_template("s_edit.html",head=head, con_data=line, sid=sid)
-
-    # with open('students.csv','r',encoding='utf-8') as f:
-    #     rdr = csv.reader(f)
-    #     next(rdr)
-    #     for line in rdr:
-    #         if line[0].replace(' ','') == sid:
-    #             return render_template("s_edit.html",head=head, con_data=line, sid=sid)
 
 @app.route("/<sid>/contacts/edit",methods=['GET','POST'])
 def edit(sid):

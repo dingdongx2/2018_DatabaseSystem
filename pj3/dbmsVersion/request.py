@@ -14,6 +14,7 @@ def option(Form, sid):
     else:
         option2(Form, sid)
 
+# students
 def option1(Form, sid):
     head = ["sid","password","sname","sex","major_id","tutor_id","grade"]
     print("func option, input : ", head, sid)
@@ -67,41 +68,25 @@ def option2(Form, sid):
             print("error")
 
 def saveRequest1(info, sid, head):
-    sql = f"UPDATE students SET {head[0]}=\'{info[0]}\', {head[1]}=\'{info[1]}\',{head[2]}=\'{info[2]}\',{head[3]}=\'{info[3]}\',{head[4]}={info[4]},{head[5]}=\'{info[5]}\',{head[6]}={info[6]} WHERE sid=\'{sid}\';"
+    sql = f"UPDATE students SET {head[0]}=\'{info[0]}\', {head[1]}=\'{info[1]}\',{head[2]}=\'{info[2]}\',{head[3]}=\'{info[3]}\',{head[4]}={info[4]},{head[5]}=\'{info[5]}\',{head[6]}={info[6]} WHERE sid=\'{info[0]}\';"
+    print("saverequest1 sid:",info[0])
     sqlQuery(sql)
 
-    # contacts_name = "students.csv"
-    # with open(contacts_name,'r') as f:
-    #     rdr = csv.reader(f)
-    #     new_lines = []
-    #     for line in rdr:
-    #         if line[1]!=info[1]:
-    #             new_lines.append(line)
-    #         else:
-    #             new_lines.append(info)
-    # with open(contacts_name,'w') as f:
-    #     w = csv.writer(f, delimiter=',')
-    #     w.writerows(new_lines)
     print("save!")
 
 def delRequest1(info, sid, head):
-    contacts_name = "students.csv"
-    with open(contacts_name,'r') as f:
-        rdr = csv.reader(f)
-        new_lines = []
-        for line in rdr:
-            if line[1]!=info[1]:
-                new_lines.append(line)
-    with open(contacts_name,'w') as f:
-        w = csv.writer(f, delimiter=',')
-        w.writerows(new_lines)
+    sql = f"DELETE FROM students WHERE sid=\'{info[0]}\';"
+    sqlQuery(sql)
     print("delete!")
 
 def addRequest1(info, sid, head):
-    info[0] = info[0]+'\t'
-    contacts_name = "students.csv"
-    with open(contacts_name,'a') as f:
-        f.write(','.join(info)+'\n')
+    # info[0] = info[0]+'\t'
+    sql = f"INSERT INTO students VALUES (\'{info[0]}\', \'{info[1]}\', \'{info[2]}\', \'{info[3]}\', \'{info[4]}\', \'{info[5]}\', \'{info[6]}\');"
+    sqlQuery(sql)
+    print("add!")
+    # contacts_name = "students.csv"
+    # with open(contacts_name,'a') as f:
+    #     f.write(','.join(info)+'\n')
 
 def saveRequest2(info, sid):
     if sid.startswith("admin"): contacts_name = "contacts.csv"

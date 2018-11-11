@@ -78,9 +78,17 @@ def putContacts():
         sql = f"INSERT INTO contacts VALUES (\'{contact[0]}\',\'{contact[1]}\',\'{contact[2]}\');"
         sqlQuery(sql)
 
-    # print("\nCONTACTS\n")
-    sql = f"SELECT * FROM contacts;"
-    sqlQuery_(sql)
+def putPerson(filename):
+    person = openCsv(filename,False)
+    sql = f"CREATE TABLE {filename}(sid CHAR(15), phone CHAR(15), email CHAR(30), position CHAR(5));"
+    sqlQuery(sql)
+    for p in person:
+        sql = f"INSERT INTO {filename} VALUES (\'{p[0]}\',\'{p[1]}\',\'{p[2]}\',\'{p[3]}\');"
+        sqlQuery(sql)
+
 
 putStudents()
 putContacts()
+putPerson("Grass_corp")
+putPerson("Fire_corp")
+putPerson("Water_corp")

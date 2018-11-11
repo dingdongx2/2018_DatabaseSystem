@@ -50,14 +50,27 @@ def portal(sid):
     if sid=="admin":
         sql = f"SELECT sid,password,sname,sex,major_id,tutor_id,grade FROM students;"
         students = sqlQuery_(sql)
+        # students[0] = students[0].replace(' ','')
+        print("\n\n\n",students)
 
         sql = f"SELECT sid,phone,email FROM contacts;"
         cc = sqlQuery_(sql)
+        print("cc:",cc)
+        res = []
+        for c in cc:
+            tmp = []
+            for item in c:
+                if item != None:
+                    tmp.append(item.replace(' ',''))
+                else:
+                    tmp.append(item);
+            res.append(tmp)
+        print("://",res)
 
         head1 = ["학번","비밀번호","이름","전공","학년","지도교수","성적","edit/delete"]
         head2= ["sid","phone","email","edit/delete"]
         context = [head1,head2]
-        return render_template("portal_admin.html", con_data = cc, context=context, students=students)
+        return render_template("portal_admin.html", con_data = res, context=context, students=students)
     else:
         # EDIT LATER
         sql = f"SELECT sid,password,sname,sex,major_id,tutor_id,grade from students WHERE sid=\'{sid}\';"
@@ -65,19 +78,18 @@ def portal(sid):
 
         sql = f"SELECT sid,phone,email FROM contacts WHERE sid=\'{sid}\';"
         cc = sqlQuery_(sql)
-        render_template("portal.html", stu_data = line, con_data = cc)
+        return render_template("portal.html", stu_data = line, con_data = cc)
 
-# 여기 수정차례
 @app.route("/admin/students/edit",methods=['GET','POST'])
 def s_edit():
     head = ["sid","password","sname","sex","major_id","tutor_id","grade"]
     sid = request.args.get('sid')
-    # sid = sid.replace(' ','')
+
     print("sid::::",sid,"/")
     if sid==None:
         return render_template("s_add.html", head=head)
     sid = sid.replace(' ','')
-    sql = f"SELECT sid,password,sname,sex,major_id,tutor_id,grade from students WHERE sid=\'{sid}\';"
+    sql = f"SELECT sid,password,sname,sex,major_id,tutor_id,grade FROM students WHERE sid=\'{sid}\';"
     line = sqlQuery_(sql)
     line = list(line[0])
     return render_template("s_edit.html",head=head, con_data=line, sid=sid)
@@ -91,12 +103,11 @@ def edit(sid):
     if sid.startswith("admin"):
         if phoneNum==None:
             return render_template("add.html", head=head[0:3], owner="admin")
-        with open('contacts.csv','r',encoding='utf-8') as c:
-            rdr = csv.reader(c)
-            next(rdr)
-            for line in rdr:
-                if line[1]==phoneNum:
-                    return render_template("edit.html", con_data=line, head=head[0:3], sid=sid)
+
+        sql = f"SELECT sid,phone,email FROM contacts WHERE phone=\'{phoneNum}\';"
+        line = sqlQuery_(sql)
+        line = list(line[0])
+        return render_template("s_edit.html", con_data=line, head=head[0:3], sid=sid)
     # students
     else:
         if phoneNum==None:

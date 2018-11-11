@@ -48,7 +48,7 @@ def portal(sid):
     cur = conn.cursor()
 
     if sid=="admin":
-        sql = f"SELECT sid,sname,sex,major_id,tutor_id,grade FROM students;"
+        sql = f"SELECT sid,password,sname,sex,major_id,tutor_id,grade FROM students;"
         students = sqlQuery_(sql)
 
         sql = f"SELECT sid,phone,email FROM contacts;"
@@ -71,10 +71,10 @@ def portal(sid):
         return render_template("portal_admin.html", con_data = cc, context=context, students=students)
     else:
         # EDIT LATER
-        sql = f"SELECT sid,sname,sex,major_id,tutor_id,grade from students WHERE sid={sid};"
+        sql = f"SELECT sid,password,sname,sex,major_id,tutor_id,grade from students WHERE sid=\'{sid}\';"
         line = sqlQuery_(sql)
 
-        sql = f"SELECT sid,phone,email FROM contacts WHERE sid={sid};"
+        sql = f"SELECT sid,phone,email FROM contacts WHERE sid=\'{sid}\';"
         cc = sqlQuery_(sql)
         # print(sql)
         # cur.execute(sql)
@@ -97,15 +97,23 @@ def portal(sid):
 def s_edit():
     head = ["sid","password","sname","sex","major_id","tutor_id","grade"]
     sid = request.args.get('sid')
+
+    sid = sid.replace(' ','')
+    print("sid::::",sid,"/")
     if sid==None:
         return render_template("s_add.html", head=head)
 
-    with open('students.csv','r',encoding='utf-8') as f:
-        rdr = csv.reader(f)
-        next(rdr)
-        for line in rdr:
-            if line[0].replace(' ','') == sid:
-                return render_template("s_edit.html",head=head, con_data=line, sid=sid)
+    sql = f"SELECT sid,password,sname,sex,major_id,tutor_id,grade from students WHERE sid=\'{sid}\';"
+    line = sqlQuery_(sql)
+    line = list(line[0])
+    return render_template("s_edit.html",head=head, con_data=line, sid=sid)
+
+    # with open('students.csv','r',encoding='utf-8') as f:
+    #     rdr = csv.reader(f)
+    #     next(rdr)
+    #     for line in rdr:
+    #         if line[0].replace(' ','') == sid:
+    #             return render_template("s_edit.html",head=head, con_data=line, sid=sid)
 
 @app.route("/<sid>/contacts/edit",methods=['GET','POST'])
 def edit(sid):

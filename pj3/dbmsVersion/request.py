@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, request
+from sql import sqlQuery, sqlQuery_
 import csv
 
 def option(Form, sid):
@@ -20,11 +21,11 @@ def option1(Form, sid):
     print(info)
 
     if Form.get('save'):
-        saveRequest1(info, sid)
+        saveRequest1(info, sid, head)
     elif Form.get('delete'):
-        delRequest1(info, sid)
+        delRequest1(info, sid, head)
     elif Form.get('add'):
-        addRequest1(info, sid)
+        addRequest1(info, sid, head)
     else:
         print("error")
 
@@ -65,22 +66,25 @@ def option2(Form, sid):
         else:
             print("error")
 
-def saveRequest1(info, sid):
-    contacts_name = "students.csv"
-    with open(contacts_name,'r') as f:
-        rdr = csv.reader(f)
-        new_lines = []
-        for line in rdr:
-            if line[1]!=info[1]:
-                new_lines.append(line)
-            else:
-                new_lines.append(info)
-    with open(contacts_name,'w') as f:
-        w = csv.writer(f, delimiter=',')
-        w.writerows(new_lines)
+def saveRequest1(info, sid, head):
+    sql = f"UPDATE students SET {head[0]}=\'{info[0]}\', {head[1]}=\'{info[1]}\',{head[2]}=\'{info[2]}\',{head[3]}=\'{info[3]}\',{head[4]}={info[4]},{head[5]}=\'{info[5]}\',{head[6]}={info[6]} WHERE sid=\'{sid}\';"
+    sqlQuery(sql)
+
+    # contacts_name = "students.csv"
+    # with open(contacts_name,'r') as f:
+    #     rdr = csv.reader(f)
+    #     new_lines = []
+    #     for line in rdr:
+    #         if line[1]!=info[1]:
+    #             new_lines.append(line)
+    #         else:
+    #             new_lines.append(info)
+    # with open(contacts_name,'w') as f:
+    #     w = csv.writer(f, delimiter=',')
+    #     w.writerows(new_lines)
     print("save!")
 
-def delRequest1(info, sid):
+def delRequest1(info, sid, head):
     contacts_name = "students.csv"
     with open(contacts_name,'r') as f:
         rdr = csv.reader(f)
@@ -93,7 +97,7 @@ def delRequest1(info, sid):
         w.writerows(new_lines)
     print("delete!")
 
-def addRequest1(info, sid):
+def addRequest1(info, sid, head):
     info[0] = info[0]+'\t'
     contacts_name = "students.csv"
     with open(contacts_name,'a') as f:

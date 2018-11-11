@@ -47,7 +47,6 @@ def portal(sid):
             for line in rdr:
                 line[0] = line[0].replace(' ','')
                 students.append(line)
-            print("students!\n\n",students)
             with open('contacts.csv','r',encoding='utf-8') as c:
                 cc = csv.reader(c)
                 next(cc)
@@ -70,9 +69,8 @@ def portal(sid):
 def s_edit():
     head = ["sid","password","sname","sex","major_id","tutor_id","grade"]
     sid = request.args.get('sid')
-    print("sid:",sid,"\n\n\n\n")
     if sid==None:
-        return render_template("add.html", head=head, owner="admin")
+        return render_template("s_add.html", head=head)
 
     with open('students.csv','r',encoding='utf-8') as f:
         rdr = csv.reader(f)
@@ -80,7 +78,6 @@ def s_edit():
         for line in rdr:
             if line[0].replace(' ','') == sid:
                 return render_template("s_edit.html",head=head, con_data=line, sid=sid)
-
 
 @app.route("/<sid>/contacts/edit",methods=['GET','POST'])
 def edit(sid):
@@ -112,7 +109,6 @@ def edit(sid):
 
 @app.route("/<sid>/contacts")
 def contacts(sid):
-    print(sid,"~\n\n\n")
     with open('students.csv','r',encoding='utf-8') as f:
         rdr = csv.reader(f)
         for line in rdr:

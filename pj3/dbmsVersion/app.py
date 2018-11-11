@@ -23,18 +23,12 @@ def login():
     passwd = request.form.get('passwd')
     print("login! sid:",sid,"/pwd:",passwd)
 
-    # conn = pg.connect(conn_str)
-    # cur = conn.cursor()
     sql = f"SELECT sid, password FROM students WHERE sid='{sid}'"
     rows = sqlQuery_(sql)
     print("rows:",rows)
-    # print(rows[0])
-    # cur.execute(sql)
 
-    # rows = cur.fetchall()
     if len(rows)!=1:
         return render_template("error.html", msg="Wrong ID/Password")
-    # conn.close()
     print(f"{sid}, {passwd}")
     return redirect(f"/{sid}")
 
@@ -75,6 +69,10 @@ def portal(sid):
         # EDIT LATER
         sql = f"SELECT sid,password,sname,sex,major_id,tutor_id,grade from students WHERE sid=\'{sid}\';"
         line = sqlQuery_(sql)
+
+        line = list(line[0])
+        line[0] = line[0].replace(' ','')
+        print("line2:",line)
 
         sql = f"SELECT sid,phone,email FROM contacts WHERE sid=\'{sid}\';"
         cc = sqlQuery_(sql)

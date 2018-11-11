@@ -141,22 +141,22 @@ def contacts(sid):
 @app.route("/<sid>/count")
 def count(sid):
     head = ["domain_name","count"]
-    with open('contacts.csv','r') as f:
-        rdr = csv.reader(f)
-        next(rdr)
-        dic = {}
-        for line in rdr:
-            tmp = line[2].split('@')
-            if len(tmp)==2:
-                # print(tmp[0],tmp[1])
-                if tmp[1] in dic.items():
-                    dic[tmp[1]]+=1
-                else:
-                    dic[tmp[1]]=1
-        domains = []
-        for x,y in list(dic.items()):
-            domains.append([x,y])
-        print(domains)
+
+    sql = f"SELECT * FROM contacts;"
+    lines = sqlQuery_(sql)
+
+    dic = {}
+    for line in lines:
+        tmp = line[2].split('@')
+        if len(tmp)==2:
+            if tmp[1] in dic.items():
+                dic[tmp[1]]+=1
+            else:
+                dic[tmp[1]]=1
+    domains = []
+    for x,y in list(dic.items()):
+        domains.append([x,y])
+    print(domains)
     return render_template("count.html",head=head,cnt_data=domains)
 
 @app.route("/<sid>/credits")

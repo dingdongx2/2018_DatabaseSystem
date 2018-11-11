@@ -1,4 +1,4 @@
-# MANAGEMENT DATA THROUGH FILE
+# MANAGEMENT DATA THROUGH DB
 
 from flask import Flask, render_template, redirect, request
 import psycopg2 as pg
@@ -10,6 +10,8 @@ from request import option, start
 
 app = Flask(__name__)
 
+conn_str = "dbname=soyoung"
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -19,15 +21,24 @@ def login():
     sid = request.form.get('sid')
     passwd = request.form.get('passwd')
 
-    with open('students.csv','r',encoding='utf-8') as f:
-        rdr = csv.reader(f)
-        tmp = "none"
-        for line in rdr:
-            if line[0].startswith(sid) and line[1].startswith(passwd):
-                return redirect(f"/{sid}")
-                tmp = line[1]
-                print("exists")
-    return render_template("error.html",msg="Wrong ID/Password")
+    conn = pg.connect(conn_str)
+    cur = conn.cursor()
+    sql = f"SELECT sid, password FROM students WHERE sid='{sid}'"
+    print(sql)
+    cur.execute(sql)
+    rows = cur.fetchall()
+    if len(rows)!=1:
+        return render_template("error.html", msg="Wrong ID/Password")
+
+    # with open('students.csv','r',encoding='utf-8') as f:
+    #     rdr = csv.reader(f)
+    #     tmp = "none"
+    #     for line in rdr:
+    #         if line[0].startswith(sid) and line[1].startswith(passwd):
+    #             return redirect(f"/{sid}")
+    #             tmp = line[1]
+    #             print("exists")
+    # return render_template("error.html",msg="Wrong ID/Password")
 
 @app.route("/<sid>", methods=['POST','GET'])
 def portal(sid):

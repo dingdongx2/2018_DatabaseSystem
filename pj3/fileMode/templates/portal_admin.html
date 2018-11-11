@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block title %}
+ADMIN
+{% endblock %}
+
+{% block body %}
+<h1>ADMIN page</h1>
+
+<div>
+  <h3>학생 리스트</h3>
+  <table>
+    <tr>
+      {% for item in context[0] %}
+        <th> {{ item }}</th>
+      {% endfor %}
+    </tr>
+    {% for student in students %}
+    <tr>
+      {% for i in [0,1,2,3,4,5] %}
+        <td>{{ student[i] }}</td>
+      {% endfor %}
+      <td>
+        <form action="/admin/students/edit" method="GET">
+          <div class="btn-group">
+            <button type="submit" name="sid" value= "{{ student[0] }}" class="btn btn-primary modify">EDIT</button>
+          </div>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <form action="/admin/students/edit" method="GET">
+    <div class="btn-group">
+      <button class="btn btn-info">+Add New Contact</button>
+    </div>
+  </form>
+</div>
+
+<div>
+  <h3>학생 주소록</h3>
+  <table>
+    <tr>
+      {% for item in context[1] %}
+        <th> {{ item }}</th>
+      {% endfor %}
+    </tr>
+    {% for item in con_data %}
+    <tr>
+      <td>{{ item[0] }}</td>
+      <td>{{ item[1] }}</td>
+      <td>{{ item[2] }}</td>
+      <td>
+        <form action="/admin/contacts/edit" method="GET">
+          <div class="btn-group">
+            <button type="submit" name="phone-num" value= "{{ item[1] }}" class="btn btn-primary modify">EDIT</button>
+          </div>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <form action="/admin/contacts/edit" method="GET">
+    <div class="btn-group">
+      <button class="btn btn-info">+Add New Contact</button>
+    </div>
+  </form>
+  <ul>
+    <li>
+      <a href='/admin/count'>도메인 통계</a>
+    </li>
+    <li>
+      <a href='/admin/credits'>성적 보기</a>
+    </li>
+    <li>
+      <a href='/admin/mail'>메일함</a>
+    </li>
+  </ul>
+</div>
+
+{% endblock %}

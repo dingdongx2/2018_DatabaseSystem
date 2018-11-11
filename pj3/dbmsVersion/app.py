@@ -24,11 +24,16 @@ def login():
     conn = pg.connect(conn_str)
     cur = conn.cursor()
     sql = f"SELECT sid, password FROM students WHERE sid='{sid}'"
-    print(sql)
     cur.execute(sql)
+
     rows = cur.fetchall()
     if len(rows)!=1:
         return render_template("error.html", msg="Wrong ID/Password")
+
+    print(rows[0])
+    conn.close()
+    print(f"{sid}, {passwd}")
+    return redirect(f"/{sid}")
 
 @app.route("/<sid>", methods=['POST','GET'])
 def portal(sid):

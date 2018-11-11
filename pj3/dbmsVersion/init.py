@@ -5,8 +5,6 @@ import psycopg2.extensions
 import csv
 
 conn_str = "dbname=soyoung"
-# conn = pg.connect(conn_str)
-# cur = conn.cursor()
 
 def sqlQuery(sql):
     conn = pg.connect(conn_str)

@@ -85,9 +85,9 @@ def addRequest1(info, sid, head):
 
 def saveRequest2(info, sid, head):
     if sid.startswith("admin"): contacts_name = "contacts"
-    elif sid.startswith("2009003125"): contacts_name = "Grass_corp"
-    elif sid.startswith("2013004394"): contacts_name = "Fire_corp"
-    elif sid.startswith("2014005004"): contacts_name = "Water_corp"
+    elif sid.startswith("2009003125"): contacts_name = "grass_corp"
+    elif sid.startswith("2013004394"): contacts_name = "fire_corp"
+    elif sid.startswith("2014005004"): contacts_name = "water_corp"
     else: contacts_name = None
 
     print("contacts_name:",contacts_name)
@@ -104,9 +104,9 @@ def saveRequest2(info, sid, head):
 
 def delRequest2(info, sid, head):
     if sid.startswith("admin"): contacts_name = "contacts"
-    elif sid.startswith("2009003125"): contacts_name = "Grass_corp"
-    elif sid.startswith("2013004394"): contacts_name = "Fire_corp"
-    elif sid.startswith("2014005004"): contacts_name = "Water_corp"
+    elif sid.startswith("2009003125"): contacts_name = "grass_corp"
+    elif sid.startswith("2013004394"): contacts_name = "fire_corp"
+    elif sid.startswith("2014005004"): contacts_name = "water_corp"
     else: contacts_name = None
 
     sql = f"DELETE FROM {contacts_name} WHERE sid=\'{info[0]}\';"
@@ -115,9 +115,9 @@ def delRequest2(info, sid, head):
 
 def addRequest2(info, sid, head):
     if sid.startswith("admin"): contacts_name = "contacts"
-    elif sid.startswith("2009003125"): contacts_name = "Grass_corp"
-    elif sid.startswith("2013004394"): contacts_name = "Fire_corp"
-    elif sid.startswith("2014005004"): contacts_name = "Water_corp"
+    elif sid.startswith("2009003125"): contacts_name = "grass_corp"
+    elif sid.startswith("2013004394"): contacts_name = "fire_corp"
+    elif sid.startswith("2014005004"): contacts_name = "water_corp"
     else: contacts_name = None
 
     print("contacts_name:",contacts_name)
@@ -131,8 +131,8 @@ def addRequest2(info, sid, head):
         print("add!")
 
 def start(sid):
-    if sid.startswith("2009003125"): contacts_name = "Grass_corp.csv"
-    elif sid.startswith("2013004394"): contacts_name = "Fire_corp.csv"
-    elif sid.startswith("2014005004"): contacts_name = "Water_corp.csv"
+    if sid.startswith("2009003125"): contacts_name = "grass_corp.csv"
+    elif sid.startswith("2013004394"): contacts_name = "fire_corp.csv"
+    elif sid.startswith("2014005004"): contacts_name = "water_corp.csv"
     else: contacts_name = None
     return contacts_name

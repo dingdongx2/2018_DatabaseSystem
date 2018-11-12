@@ -76,7 +76,8 @@ def portal(sid):
 
         sql = f"SELECT sid,phone,email FROM contacts WHERE sid=\'{sid}\';"
         cc = sqlQuery_(sql)
-        return render_template("portal.html", stu_data = line, con_data = cc)
+        head = ["학번","이름","전공","학년","지도교수"]
+        return render_template("portal.html", stu_data = line, con_data = cc, head=head)
 
 @app.route("/admin/students/edit",methods=['GET','POST'])
 def s_edit():
@@ -110,31 +111,50 @@ def edit(sid):
     else:
         if phoneNum==None:
             return render_template("add.html", head=head, owner=sid)
-
-        with open(start(sid),'r',encoding='utf-8') as userC:
-            userCon = csv.reader(userC)
-            for line in userCon:
-                if line[1].replace(' ','')==phoneNum.replace(' ',''):
-                    return render_template("edit.html", con_data=line, head=head, sid=sid)
+        print("sid:",sid)
+        if sid.startswith("2009003125"): contacts_name = "grass_corp"
+        elif sid.startswith("2013004394"): contacts_name = "fire_corp"
+        elif sid.startswith("2014005004"): contacts_name = "water_corp"
+        else: contacts_name = None
+        sql = f"SELECT sid,phone,email,position FROM {contacts_name} WHERE phone=\'{phoneNum}\';"
+        line = sqlQuery_(sql)
+        line = list(line[0])
+        line[1] = line[1].replace(' ','')
+        print("\n\n\n",line)
+        return render_template("edit.html", con_data=line, head=head, sid=sid)
 
     return render_template("error.html",msg="error02")
 
 @app.route("/<sid>/contacts")
 def contacts(sid):
-    with open('students.csv','r',encoding='utf-8') as f:
-        rdr = csv.reader(f)
-        for line in rdr:
-            if line[0].startswith(sid):
-                with open('contacts.csv','r',encoding='utf-8') as c:
-                    cc = csv.reader(c)
-                    next(cc)
+    sql = f"SELECT sid,password,sname,sex,major_id,tutor_id,grade FROM students WHERE sid=\'{sid}\';"
+    line = sqlQuery_(sql)
+    line = list(line[0])
+    line[0] = line[0].replace(' ','')
+    line[1] = line[1].replace(' ','')
 
-                    with open(start(sid), 'r', encoding='utf-8') as userC:
-                        userCon = csv.reader(userC)
-                        line[0]=line[0].replace(' ','')
-                        head = ["sid","phone","email","position","Edit/Delete"]
-                        return render_template("contacts.html", stu_data = line, con_data = cc, user_data = userCon, head=head[0:3], head2=head)
-    return render_template("error.html",msg="error03")
+    sql = f"SELECT sid,phone,email FROM contacts;"
+    hyContacts = sqlQuery_(sql)
+
+    if sid.startswith("2009003125"): contacts_name = "grass_corp"
+    elif sid.startswith("2013004394"): contacts_name = "fire_corp"
+    elif sid.startswith("2014005004"): contacts_name = "water_corp"
+    else: contacts_name = None
+    sql = f"SELECT sid,phone,email,position FROM {contacts_name};"
+    stuContacts = sqlQuery_(sql)
+    # print("\n~~\n",list(stuContacts[0]))
+    stu = []
+    for stuContact in stuContacts:
+        stuContact = list(stuContact)
+        stuContact[1] = stuContact[1].replace(' ','')
+        stu.append(stuContact)
+        # stuContact[1] = list(stuContact[1]).replace(' ','')
+    print("stucon~:",stu)
+
+    head = ["sid","phone","email","position","Edit/Delete"]
+
+    return render_template("contacts.html", stu_data = line, con_data = hyContacts, user_data = stu, head=head[0:3], head2=head)
+    # return render_template("error.html",msg="error03")
 
 @app.route("/<sid>/count")
 def count(sid):

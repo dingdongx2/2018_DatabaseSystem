@@ -21,7 +21,7 @@ def sqlQuery_(sql):
     cur.execute(sql)
 
     rows = cur.fetchall()
-    print(rows)
+    # print(rows)
 
     cur.close()
     conn.commit()
@@ -86,9 +86,18 @@ def putPerson(filename):
         sql = f"INSERT INTO {filename} VALUES (\'{p[0]}\',\'{p[1]}\',\'{p[2]}\',\'{p[3]}\');"
         sqlQuery(sql)
 
+def init():
+    # delete all of database
+    dbName = ["contacts","students","fire_corp","grass_corp","water_corp"]
+    for name in dbName:
+        sql = f"Drop Table {name};"
+        sqlQuery(sql)
+    print("drop all of database")
 
+init()
 putStudents()
 putContacts()
 putPerson("Grass_corp")
 putPerson("Fire_corp")
 putPerson("Water_corp")
+print("fin")

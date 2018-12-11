@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ stu_data['sid'] }}
+{% endblock %}
+
+{% block body %}
+<h1>{{ stu_data[2] }}의 주소록</h1>
+
+<div>
+  <h3>HY-in 주소록</h3>
+  <table>
+    <tr>
+      {% for item in head %}
+        <th> {{ item }} </th>
+      {% endfor %}
+    </tr>
+    {% for item in con_data %}
+    <tr>
+      <td>{{ item[0] }}</td>
+      <td>{{ item[1] }}</td>
+      <td>{{ item[2] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h3>개인 주소록</h3>
+  <table>
+    <tr>
+      {% for item in head2 %}
+        <th> {{ item }} </th>
+      {% endfor %}
+    </tr>
+    {% for item in user_data %}
+    <tr>
+      <td>{{ item[0] }}</td>
+      <td>{{ item[1] }}</td>
+      <td>{{ item[2] }}</td>
+      <td>{{ item[3] }}</td>
+      <td>
+        <form action="/{{ stu_data[0] }}/contacts/edit" method="GET">
+          <div class="btn-group">
+            <button type="submit" name="phone-num" value= "{{ item[1] }}" class="btn btn-primary modify">EDIT</button>
+          </div>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <form action="/{{ stu_data[0] }}/contacts/edit" method="GET">
+    <div class="btn-group">
+      <button class="btn btn-info">+Add New Contact</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

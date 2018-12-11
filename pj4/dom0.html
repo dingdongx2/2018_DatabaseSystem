@@ -1,0 +1,35 @@
+!<DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script>
+      $(document).ready(function(){
+        $("#demo").submit(function(event){
+            alert('hello, '+$("#name").val());
+            event.preventDefault();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    Hello, world
+    <first-name>Paris</first-name>
+    <form id="demo" onsubmit="greet()">
+      <input id="name" type="text"/>
+      <input type="submit">
+    </form>
+    <script>
+      // function greet(){
+      //   alert("hello, world")
+      // }
+      // document.getElementById("demo").onsubmit = function(){
+      //   alert("hello, world")
+      //   return false;
+      // };
+    </script>
+  </body>
+</html>

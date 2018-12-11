@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{% endblock %}
+
+{% block body %}
+<form action="/admin" method="POST">
+  <div class="form-group">
+    {% for item in head %}
+      <input autocomplete="off" autofocus class="form-control" name="{{ item }}" placeholder="{{ item }}" type="text" value="{{ con_data[loop.index-1] }}">
+    {% endfor %}
+  </div>
+<!-- </form> -->
+<!-- <form action="/admin" method="post"> -->
+  <div class="btn-group">
+    <button class="btn btn-primary" type="submit" name="save" value="save">Save</button>
+    <button class="btn btn-danger" type="submit" name="delete" value="delete">Delete</button>
+  </div>
+</form>
+
+{% endblock %}

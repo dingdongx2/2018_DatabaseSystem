@@ -23,7 +23,7 @@ def login():
     passwd = request.form.get('passwd')
     print("login! sid:",sid,"/pwd:",passwd)
 
-    sql = f"SELECT sid, password FROM students WHERE sid='{sid}', password='{password}'"
+    sql = f"SELECT sid, password FROM students WHERE sid='{sid}' AND password='{passwd}'"
     rows = sqlQuery_(sql)
     print("rows:",rows)
 

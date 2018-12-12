@@ -56,6 +56,11 @@ def login():
     print(f"{local}, {passwd}")
     return redirect(f"/{local}")
 
+@app.route("/<local>", methods=['POST','GET'])
+def portal(local):
+    print("hi",local)
+    return render_template("portal.html")
+
 @app.route('/p/<page_name>')
 def static_page(page_name):
     return render_template(f'{page_name}.html')

@@ -33,17 +33,17 @@ def login():
     rows = 'a'
     while True:
         if trial == 0:
-            sql = f"SELECT local, domain, passwd FROM sellers WHERE local=\'{local}\' AND domain=\'{domain}\' AND passwd=\'{passwd}\';"
+            sql = f"SELECT local FROM sellers WHERE local=\'{local}\' AND domain=\'{domain}\' AND passwd=\'{passwd}\';"
             rows = sqlQuery_(sql)
             print("00",rows)
             trial+=1
         elif trial == 1:
-            sql = f"SELECT local, domain, passwd FROM deliveries WHERE local=\'{local}\' AND domain=\'{domain}\' AND passwd=\'{passwd}\';"
+            sql = f"SELECT local FROM deliveries WHERE local=\'{local}\' AND domain=\'{domain}\' AND passwd=\'{passwd}\';"
             rows = sqlQuery_(sql)
             print("01",rows)
             trial+=1
         elif trial == 2:
-            sql = f"SELECT local, domain, passwd FROM customers WHERE local=\'{local}\' AND domain=\'{domain}\' AND passwd=\'{passwd}\';"
+            sql = f"SELECT local FROM customers WHERE local=\'{local}\' AND domain=\'{domain}\' AND passwd=\'{passwd}\';"
             rows = sqlQuery_(sql)
             print("02",rows)
             trial+=1
@@ -53,13 +53,56 @@ def login():
         if len(rows)>=1:
             break
 
-    print(f"{local}, {passwd}")
-    return redirect(f"/{local}")
+    # print(f"{local}, {passwd}")
+    print("")
+    # rows = rows[0]
+    # print(rows)
+    # info = []
+    # for row in rows:
+    #     info.append(str(row).replace(' ',''))
+    # print("info:",info)
+    return redirect("/{}".format(local))
 
+# 8mf3trl
 @app.route("/<local>", methods=['POST','GET'])
 def portal(local):
     print("hi",local)
-    return render_template("portal.html")
+
+    conn = pg.connect(conn_str)
+    cur = conn.cursor()
+
+    trial = 0
+    rows = 'a'
+    while True:
+        if trial == 0:
+            sql = f"SELECT * FROM sellers WHERE local=\'{local}\';"
+            rows = sqlQuery_(sql)
+            print("00",rows)
+            trial+=1
+        elif trial == 1:
+            sql = f"SELECT * FROM deliveries WHERE local=\'{local}\';"
+            rows = sqlQuery_(sql)
+            print("01",rows)
+            trial+=1
+        elif trial == 2:
+            sql = f"SELECT * FROM customers WHERE local=\'{local}\';"
+            rows = sqlQuery_(sql)
+            print("02",rows)
+            trial+=1
+        else:
+            print("error 00")
+
+        if len(rows)>=1:
+            break
+
+    rows = rows[0]
+    print(rows)
+    info = []
+    for row in rows:
+        info.append(str(row).replace(' ',''))
+    print("info:",info)
+
+    return render_template("portal.html", info=info)
 
 @app.route('/p/<page_name>')
 def static_page(page_name):

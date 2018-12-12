@@ -1,0 +1,32 @@
+{
+  "day": 0,
+  "holiday": false,
+  "open": "2130",
+  "closed": "0330"
+}, {
+  "day": 1,
+  "holiday": false,
+  "open": "1230",
+  "closed": "0900"
+}, {
+  "day": 2,
+  "holiday": false,
+  "open": "1330",
+  "closed": "1100"
+}, {
+  "day": 3,
+  "holiday": false,
+  "open": "0300",
+  "closed": "0000"
+}, {
+  "day": 4,
+  "holiday": true
+}, {
+  "day": 5,
+  "holiday": false,
+  "open": "1530",
+  "closed": "2230"
+}, {
+  "day": 6,
+  "holiday": true
+}

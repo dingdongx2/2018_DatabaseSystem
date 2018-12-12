@@ -29,7 +29,6 @@ def sqlQuery_(sql):
     cur.execute(sql)
 
     rows = cur.fetchall()
-    # print(rows)
 
     cur.close()
     conn.commit()

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, redirect
+from flask import Flask, render_template, jsonify, redirect, request
 import psycopg2 as pg
 import psycopg2.extras
 import psycopg2.extensions
@@ -17,18 +17,44 @@ def index():
 
 @app.route('/login', methods=['POST'])
 def login():
-    sid = request.form.get('sid')
+    print("start")
+
+    email = request.form.get('email')
     passwd = request.form.get('passwd')
-    print("login! sid:",sid,"/pwd:",passwd,"/")
+    tmp = email.split('@')
+    print("tmp:",tmp)
+    local = tmp[0]
+    domain = tmp[1]
 
-    sql = f"SELECT sid, password FROM students WHERE sid=\'{sid}\' AND password=\'{passwd}\';"
-    rows = sqlQuery_(sql)
-    print("rows:",rows)
+    print(email, passwd)
+    print("login! id:",local,"/domain:",domain,"/pwd:",passwd,"/")
 
-    if len(rows)!=1:
-        return render_template("error.html", msg="Wrong ID/Password")
-    print(f"{sid}, {passwd}")
-    return redirect(f"/{sid}")
+    trial = 0
+    rows = 'a'
+    while True:
+        if trial == 0:
+            sql = f"SELECT local, domain, passwd FROM sellers WHERE local=\'{local}\' AND domain=\'{domain}\' AND passwd=\'{passwd}\';"
+            rows = sqlQuery_(sql)
+            print("00",rows)
+            trial+=1
+        elif trial == 1:
+            sql = f"SELECT local, domain, passwd FROM deliveries WHERE local=\'{local}\' AND domain=\'{domain}\' AND passwd=\'{passwd}\';"
+            rows = sqlQuery_(sql)
+            print("01",rows)
+            trial+=1
+        elif trial == 2:
+            sql = f"SELECT local, domain, passwd FROM customers WHERE local=\'{local}\' AND domain=\'{domain}\' AND passwd=\'{passwd}\';"
+            rows = sqlQuery_(sql)
+            print("02",rows)
+            trial+=1
+        else:
+            return render_template("error.html", msg="Wrong Email/Password")
+
+        if len(rows)>=1:
+            break
+
+    print(f"{local}, {passwd}")
+    return redirect(f"/{local}")
 
 @app.route('/p/<page_name>')
 def static_page(page_name):

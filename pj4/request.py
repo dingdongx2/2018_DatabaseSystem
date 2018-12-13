@@ -2,17 +2,45 @@ from flask import Flask, render_template, redirect, request
 from sql import sqlQuery, sqlQuery_
 import csv
 
-def option(Form, sid):
-    print(Form.get("sname"))
-    print("sid:",sid,"\n\n\n")
-    if sid == "admin":
-        if Form.get("sname") != None:
-            print("option1")
-            option1(Form, sid)
-        else:
-            option2(Form, sid)
+def option(Form, local):
+    print(Form.get("name"))
+    print("local:",local,"\n\n\n")
+
+    trial = 0
+    rows = 'a'
+    type = None
+    while True:
+        if trial == 0: #sellers
+            print("request:seller")
+
+            trial+=1
+            option_s(Form, local)
+        if len(rows)>=1:
+            break
+
+    # if sid == "admin":
+    #     if Form.get("sname") != None:
+    #         print("option1")
+    #         option1(Form, sid)
+    #     else:
+    #         option2(Form, sid)
+    # else:
+    #     option2(Form, sid)
+
+def option_s(Form, local):
+    sql = "SELECT name, local FROM sellers WHERE local=\'{}\'".format(local)
+    personInfo = sqlQuery_(sql)
+
+    type = "sellers"
+    print("origin:",list(personInfo[0]))
+    print("after:",Form.get("name"),Form.get("password"))
+
+    if Form.get("save"):
+        sql = "UPDATE sellers SET name=\'{}\', passwd=\'{}\' WHERE local=\'{}\'".format(Form.get("name"),Form.get("password"),local)
+        sqlQuery(sql)
+        print("edit")
     else:
-        option2(Form, sid)
+        print("cancel")
 
 # students
 def option1(Form, sid):

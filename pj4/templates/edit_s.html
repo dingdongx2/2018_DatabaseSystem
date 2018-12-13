@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{% endblock %}
+
+{% block body %}
+<form action="/{{ info[3] }}" method="POST">
+  <div class="form-group">
+    <input autofocus class="form-control" name="name" placeholder="name1" type="text" value={{ info[1] }}>
+    <input autofocus class="form-control" name="password" placeholder="password1" type="password" value={{ info[5] }}>
+    <!-- {% for item in head %}
+      <input autocomplete="off" autofocus class="form-control" name="{{ item }}" placeholder="{{ item }}" type="text" value="hi">
+    {% endfor %} -->
+  </div>
+<!-- </form> -->
+<!-- <form action="/admin" method="post"> -->
+  <div class="btn-group">
+    <button class="btn btn-primary" type="submit" name="save" value="save">Save</button>
+    <button class="btn btn-danger" type="submit" name="cancel" value="cancel">Cancel</button>
+  </div>
+</form>
+
+{% endblock %}

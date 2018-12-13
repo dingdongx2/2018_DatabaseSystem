@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+<h1>환영합니다! 판매자 {{ info[2][1] }}님! ^0^/</h1>
+
+<h3>personal info</h3>
+<table>
+  <tr>
+    {% for menu in info[0][1] %}
+      <th>{{ menu }}</th>
+    {% endfor %}
+  </tr>
+  <tr>
+    {% for i in info[2] %}
+      <td>{{ i }}</td>
+    {% endfor %}
+  </tr>
+</table>
+
+<h3>store list</h3>
+<table>
+  <tr>
+    {% for menu in info[0][0] %}
+      <th>{{ menu }}</th>
+    {% endfor %}
+  </tr>
+  {% for store in info[1] %}
+    <tr>
+      {% for s in store %}
+        <td>{{ s }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+
+<form action="/{{ info[2][3] }}/edit" method="GET">
+  <div class="btn-group">
+    <button type="submit" name="local" value="{{ info[1][3] }}" class="btn btn-primary modify">EDIT</button>
+  </div>
+</form>
+{% endblock %}

@@ -71,20 +71,20 @@ def putSeller():
     people = people[1:]
 
     # create table
-    sql = f"CREATE TABLE sellers({menu[0]} INTEGER, {menu[1]} CHAR(20), {menu[2]} CHAR(20), {menu[3]} CHAR(10), {menu[4]} CHAR(20), {menu[5]} CHAR(20));"
+    sql = "CREATE TABLE sellers({} INTEGER, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} VARCHAR);".format(menu[0],menu[1],menu[2],menu[3],menu[4],menu[5])
     sqlQuery(sql)
 
     # insert values
     conn = pg.connect(conn_str)
     cur = conn.cursor()
     for person in people:
-        sql = f"INSERT INTO sellers VALUES ({person[0]},\'{person[1]}\',\'{person[2]}\',\'{person[3]}\',\'{person[4]}\',\'{person[5]}\');"
+        sql = "INSERT INTO sellers VALUES ({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(person[0],person[1],person[2],person[3],person[4],person[5])
         # sqlQuery(sql)
         cur.execute(sql)
     cur.close()
     conn.commit()
 
-    sql = f"SELECT * FROM sellers;"
+    sql = "SELECT * FROM sellers;"
     sqlQuery(sql)
 
 # customers
@@ -95,20 +95,20 @@ def putCustomer():
     people = people[1:]
 
     # create table
-    sql = f"CREATE TABLE customers({menu[0]} CHAR(20), {menu[1]} CHAR(20), {menu[2]} CHAR(10), {menu[3]} CHAR(20), {menu[4]} CHAR(20), {menu[5]} VARCHAR, {menu[6]} FLOAT, {menu[7]} FLOAT);"
+    sql = "CREATE TABLE customers({} VARCHAR, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} FLOAT, {} FLOAT);".format(menu[0],menu[1],menu[2],menu[3],menu[4],menu[5],menu[6],menu[7])
     sqlQuery(sql)
 
     # insert values
     conn = pg.connect(conn_str)
     cur = conn.cursor()
     for person in people:
-        sql = f"INSERT INTO customers VALUES (\'{person[0]}\',\'{person[1]}\',\'{person[2]}\',\'{person[3]}\',\'{person[4]}\',\'{person[5]}\',{person[6]},{person[7]});"
+        sql = "INSERT INTO customers VALUES (\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},{});".format(person[0],person[1],person[2],person[3],person[4],person[5],person[6],person[7])
         # sqlQuery(sql)
         cur.execute(sql)
     cur.close()
     conn.commit()
 
-    sql = f"SELECT * FROM customers;"
+    sql = "SELECT * FROM customers;"
     sqlQuery(sql)
 
 # delivery
@@ -119,20 +119,20 @@ def putDelivery():
     people = people[1:]
 
     # create table
-    sql = f"CREATE TABLE deliveries({menu[0]} INTEGER, {menu[1]} CHAR(20), {menu[2]} CHAR(20), {menu[3]} CHAR(10), {menu[4]} CHAR(20), {menu[5]} CHAR(20), {menu[6]} FLOAT, {menu[7]} FLOAT, {menu[8]} INTEGER);"
+    sql = "CREATE TABLE deliveries({} INTEGER, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} FLOAT, {} FLOAT, {} INTEGER);".format(menu[0],menu[1],menu[2],menu[3],menu[4],menu[5],menu[6],menu[7],menu[8])
     sqlQuery(sql)
 
     # insert values
     conn = pg.connect(conn_str)
     cur = conn.cursor()
     for person in people:
-        sql = f"INSERT INTO deliveries VALUES ({person[0]},\'{person[1]}\',\'{person[2]}\',\'{person[3]}\',\'{person[4]}\',\'{person[5]}\',{person[6]},{person[7]},{person[8]});"
+        sql = "INSERT INTO deliveries VALUES ({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},{},{});".format(person[0],person[1],person[2],person[3],person[4],person[5],person[6],person[7],person[8])
         # sqlQuery(sql)
         cur.execute(sql)
     cur.close()
     conn.commit()
 
-    sql = f"SELECT * FROM deliveries;"
+    sql = "SELECT * FROM deliveries;"
     sqlQuery(sql)
 
 def putStores():
@@ -157,7 +157,7 @@ def putStores():
     cur.close()
     conn.commit()
 
-    sql = f"SELECT * FROM stores;"
+    sql = "SELECT * FROM stores;"
     sqlQuery(sql)
 
 # bank
@@ -168,7 +168,7 @@ def putBank():
     stores = stores[1:]
 
     # create table
-    sql = f"CREATE TABLE banks({menu[0]} INTEGER, {menu[1]} INTEGER, {menu[2]} CHAR(10));"
+    sql = "CREATE TABLE banks({} INTEGER, {} INTEGER, {} VARCHAR);".format(menu[0],menu[1],menu[2])
     sqlQuery(sql)
 
     # insert values
@@ -180,7 +180,7 @@ def putBank():
     cur.close()
     conn.commit()
 
-    sql = f"SELECT * FROM banks;"
+    sql = "SELECT * FROM banks;"
     sqlQuery(sql)
 
 # menu
@@ -204,7 +204,7 @@ def putMenu():
     cur.close()
     conn.commit()
 
-    sql = f"SELECT * FROM menues;"
+    sql = "SELECT * FROM menues;"
     sqlQuery(sql)
 
 def init():

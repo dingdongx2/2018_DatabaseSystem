@@ -68,6 +68,9 @@ def login():
 # 2ekle2gw
 @app.route("/<local>", methods=['POST','GET'])
 def portal(local):
+    if request.method == 'POST':
+        option(request.form, local)
+
     print("hi",local)
 
     conn = pg.connect(conn_str)
@@ -85,12 +88,13 @@ def portal(local):
             personInfo = sqlQuery_(sql)
 
             type = "sellers"
-            tmp = [sellers_menu]
+            tmp = []
             for store in storeInfo:
                 tmp.append(list(store))
-            rows = [tmp,[stores_menu,list(personInfo[0])]]
-            print("01",rows[0])
-            print("02",rows[1])
+            rows = [[sellers_menu,stores_menu],tmp,list(personInfo[0])]
+            print("")
+            for row in rows:
+                print(row)
             trial+=1
 
         elif trial == 1:
@@ -123,10 +127,12 @@ def portal(local):
 def edit(local):
     id = request.args.get('local')
     print("id:",id)
+    head = ["id","pwd"]
 
     sql = "SELECT * FROM sellers WHERE local=\'{}\'".format(local)
     info = list(sqlQuery_(sql)[0])
-    return render_template("edit_s.html",info=info)
+    print("ready for edit:",info)
+    return render_template("edit_s.html",info=info,head=head)
 
 @app.route('/p/<page_name>')
 def static_page(page_name):

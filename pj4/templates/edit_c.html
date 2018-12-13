@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{% endblock %}
+
+{% block body %}
+<form action="/{{ info[2] }}" method="POST">
+  <div class="form-group">
+    <input autofocus class="form-control" name="name" placeholder="name1" type="text" value={{ info[0] }}>
+    <input autofocus class="form-control" name="password" placeholder="password1" type="password" value={{ info[4] }}>
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-primary" type="submit" name="save" value="save">Save</button>
+    <button class="btn btn-danger" type="submit" name="cancel" value="cancel">Cancel</button>
+  </div>
+</form>
+
+{% endblock %}

@@ -5,8 +5,25 @@
 {% endblock %}
 
 {% block body %}
-<h1>환영합니다! 고객 {{ info[1][1] }}님! ^0^/</h1>
+<h1>환영합니다! 고객 {{ info[1][0] }}님! ^0^/</h1>
 
+<h3>personal info</h3>
+<table>
+  <tr>
+    {% for menu in info[0] %}
+      <th>{{ menu }}</th>
+    {% endfor %}
+  </tr>
+  <tr>
+    {% for i in info[1] %}
+      <td>{{ i }}</td>
+    {% endfor %}
+  </tr>
+</table>
 
-
+<form action="/{{ info[1][2] }}/edit" method="GET">
+  <div class="btn-group">
+    <button type="submit" name="local" value="{{ info[1][2] }}" class="btn btn-primary modify">EDIT</button>
+  </div>
+</form>
 {% endblock %}

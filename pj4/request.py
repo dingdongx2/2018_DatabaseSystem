@@ -6,37 +6,54 @@ def option(Form, local):
     print(Form.get("name"))
     print("local:",local,"\n\n\n")
 
+    type = search(local)
+    if type=="sellers":
+        print("request:seller")
+        option_p(Form, local) # Form : name/pwd & local : name
+    elif type=="deliveries":
+        print("")
+    elif type=="customers":
+        option_p(Form, local)
+    else:
+        print("error 07")
+
+def search(local):
+    print("/00")
     trial = 0
     rows = 'a'
     type = None
     while True:
         if trial == 0: #sellers
-            print("request:seller")
-
+            sql = "SELECT * FROM sellers WHERE local=\'{}\'".format(local)
+            personInfo = sqlQuery_(sql)
+            if len(personInfo)>=1:
+                return "sellers"
             trial+=1
-            option_s(Form, local)
-        if len(rows)>=1:
-            break
+        elif trial == 1: # deliveries
+            sql = "SELECT * FROM deliveries WHERE local=\'{}\'".format(local)
+            personInfo = sqlQuery_(sql)
+            if len(personInfo)>=1:
+                return "deliveries"
+            trial+=1
+        elif trial == 2: # customers
+            sql = "SELECT * FROM customers WHERE local=\'{}\'".format(local)
+            personInfo = sqlQuery_(sql)
+            if len(personInfo)>=1:
+                return "customers"
+            trial+=1
+        else:
+            return
 
-    # if sid == "admin":
-    #     if Form.get("sname") != None:
-    #         print("option1")
-    #         option1(Form, sid)
-    #     else:
-    #         option2(Form, sid)
-    # else:
-    #     option2(Form, sid)
-
-def option_s(Form, local):
-    sql = "SELECT name, local FROM sellers WHERE local=\'{}\'".format(local)
+def option_p(Form, local): # name/pwd change
+    type = search(local)
+    sql = "SELECT name, passwd FROM {} WHERE local=\'{}\'".format(type,local)
     personInfo = sqlQuery_(sql)
 
-    type = "sellers"
     print("origin:",list(personInfo[0]))
     print("after:",Form.get("name"),Form.get("password"))
 
     if Form.get("save"):
-        sql = "UPDATE sellers SET name=\'{}\', passwd=\'{}\' WHERE local=\'{}\'".format(Form.get("name"),Form.get("password"),local)
+        sql = "UPDATE {} SET name=\'{}\', passwd=\'{}\' WHERE local=\'{}\'".format(type,Form.get("name"),Form.get("password"),local)
         sqlQuery(sql)
         print("edit")
     else:

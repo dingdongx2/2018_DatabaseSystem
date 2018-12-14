@@ -8,6 +8,32 @@
 
 <h3>가게 info</h3>
 
+<table>
+  <tr>
+    <th>태그</th>
+    <th>편집</th>
+  </tr>
+  {% for tag in tag_list %}
+    <tr>
+      <td>{{ tag }}</td>
+      <td>
+        <form action="/{{ local }}/store?sid={{ sid }}" method='POST'>
+          <input type="hidden" name="sid" value = {{ sid }}>
+          <input type="hidden" name="tags" value="null">
+          <input type="hidden" name="tag" value={{ tag }}>
+          <input type='submit' name="delete_tag" value='삭제'>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+<form action="/{{ local }}/store?sid={{ sid }}" method='POST'>
+  <input autofocus class="form-control" name="added_tag" placeholder="새로운 태그" type="text" value="">
+  <input type="hidden" name="sid" value = {{ sid }}>
+  <input type="hidden" name="tags" value="null">
+  <input type='submit' name="add_tag" value='추가하기'>
+</form>
+
 <h3>메뉴 info</h3>
 
 <table>

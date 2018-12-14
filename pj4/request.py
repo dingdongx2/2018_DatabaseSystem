@@ -19,9 +19,15 @@ def option(Form, local, opt):
     elif opt=="edit_store":
         if type=="sellers":
             option_s(Form, local)
+        else:
+            print("error 08")
+    elif opt=="edit_tag":
+        if type=="sellers":
+            option_t(Form, local)
+        else:
+            print("error 09")
 
 def search(local):
-    print("/00")
     trial = 0
     rows = 'a'
     type = None
@@ -46,6 +52,34 @@ def search(local):
             trial+=1
         else:
             return
+
+def option_t(Form, local):
+    type = search(local)
+    if Form.get("delete_tag"):
+        sql = "SELECT tags FROM stores WHERE sid={}".format(Form.get("sid"))
+        tag_list = list(sqlQuery_(sql)[0])[0].replace('"','').replace(' ','')[1:][:-1].split(",")
+        print("01:",tag_list)
+        print("{} 를 삭제하고 싶음".format(Form.get("tag")))
+        tag_list.remove(Form.get("tag"))
+        print("02:",tag_list)
+        sql = "UPDATE stores SET tags=\'{}\' WHERE sid={}".format(str(tag_list).replace("'",'"'),Form.get("sid"))
+        sqlQuery(sql)
+        print(sql)
+
+        # sqlQuery(sql)
+    elif Form.get("add_tag"):
+        sql = "SELECT tags FROM stores WHERE sid={}".format(Form.get("sid"))
+        tag_list = list(sqlQuery_(sql)[0])[0].replace('"','').replace(' ','')[1:][:-1].split(",")
+        print("01:",tag_list)
+        print("{} 를 추가하고 싶음".format(Form.get("added_tag")))
+        if tag_list[0] == None:
+            tag_list = [Form.get("added_tag")]
+        else:
+            tag_list.append(Form.get("added_tag"))
+        print("02:",tag_list)
+        sql = "UPDATE stores SET tags=\'{}\' WHERE sid={}".format(str(tag_list).replace("'",'"'),Form.get("sid"))
+        sqlQuery(sql)
+        print(sql)
 
 def option_s(Form, local): # about store
     type = search(local)

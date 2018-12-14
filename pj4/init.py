@@ -49,13 +49,8 @@ def openCsv(filename, jsonExists):
                 res.append(line)
         elif jsonExists==2:
             for line in rdr:
-                # print(line[5])
                 line[5] = json.loads(line[5])
-                # print(":",line[5])
                 line[6] = json.loads(line[6])
-                # line[5] = stringToBase64(line[5])
-                # line[6] = stringToBase64(line[6])
-                # print(line)
                 res.append(line)
         else:
             for line in rdr:
@@ -157,6 +152,11 @@ def putStores():
     cur.close()
     conn.commit()
 
+    print("01")
+    sql = "ALTER TABLE stores ADD COLUMN tags VARCHAR DEFAULT \'[]\'"
+    sqlQuery(sql)
+
+    print("02")
     sql = "SELECT * FROM stores;"
     sqlQuery(sql)
 
@@ -212,17 +212,24 @@ def init():
     # dbName = ["sellers", "customers", "deliveries"]
     dbName = ["sellers","customers","deliveries","banks", "menues", "stores"]
     for name in dbName:
-        sql = "Drop Table {};".format(name)
-        sqlQuery(sql)
+        try:
+            sql = "Drop Table {};".format(name)
+            sqlQuery(sql)
+        except:
+            continue
     print("dropped all of database")
 
 init()
 putSeller()
-# print("sellers fin")
+print("sellers fin")
 putCustomer()
-# print("customers fin")
+print("customers fin")
 putDelivery()
+print("deliveries fin")
 putBank()
+print("banks fin")
 putMenu()
+print("menues fin")
 putStores()
+print("stores fin")
 print("fin")

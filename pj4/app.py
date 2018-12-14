@@ -7,8 +7,8 @@ from form import contactsForm
 from request import option, start, search
 from sql import sqlQuery, sqlQuery_
 
-sellers_menu = ["sid","address","sname","lat","lng","phone_nums","schedules","seller_id"]
-stores_menu = ["seller_id","name","phone","local","domain","passwd"]
+stores_menu = ["sid","address","sname","lat","lng","phone_nums","schedules","seller_id","tags"]
+sellers_menu = ["seller_id","name","phone","local","domain","passwd"]
 customers_menu = ["name","phone","local","domain","passwd","payments","lat","lng"]
 app = Flask(__name__)
 
@@ -59,7 +59,7 @@ def portal(local):
             tmp = []
             for store in storeInfo:
                 tmp.append(list(store))
-            rows = [[sellers_menu,stores_menu],tmp,list(personInfo[0])]
+            rows = [[stores_menu,sellers_menu],tmp,list(personInfo[0])]
 
     elif type=="deliveries":
         sql = f"SELECT * FROM deliveries WHERE local=\'{local}\';"
@@ -113,20 +113,38 @@ def edit(local):
 @app.route("/<local>/store",methods=['GET','POST'])
 def store(local):
     if request.method == 'POST':
-        print("request!!!!")
-        print("before:",request.form.get('before_menu'))
-        print("after:",request.form.get('after_menu'))
-        option(request.form, local, "edit_store")
+        print("10")
+        if request.form.get('tags'):
+            option(request.form, local, "edit_tag")
+        else:
+            print("request!!!!")
+            print("before:",request.form.get('before_menu'))
+            print("after:",request.form.get('after_menu'))
+            option(request.form, local, "edit_store")
 
     sid = request.args.get('sid') # sid : store num
     print("sid:",sid)
     print("local:",local)
+
     sql = "SELECT menu from menues WHERE sid={}".format(sid)
     menues = sqlQuery_(sql)
     menu_list = []
-    for menu in menues:
-        menu_list.append(menu[0])
-    return render_template("manage.html",menu_list = menu_list, sid=sid, local=local)
+    for menu in menues: menu_list.append(menu[0])
+
+    sql = "SELECT tags from stores WHERE sid={}".format(sid)
+    tmp = list(sqlQuery_(sql)[0])[0]
+    tmp = tmp.replace('"','').replace(' ','')[1:][:-1].split(",")
+    print("tmp:",tmp)
+    if tmp[0]==None:
+        tags = ['None']
+    else:
+        tags = tmp
+    print("0.:",tags)
+    tag_list = []
+    for tag in tags:
+        tag_list.append(tag)
+
+    return render_template("manage.html",menu_list = menu_list, sid=sid, local=local, tag_list=tag_list)
 
 @app.route('/p/<page_name>')
 def static_page(page_name):

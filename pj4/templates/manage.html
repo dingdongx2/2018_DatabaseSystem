@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{% endblock %}
+
+{% block body %}
+<h1><가게이름> 관리 페이지</h1>
+
+<h3>가게 info</h3>
+
+<h3>메뉴 info</h3>
+
+<table>
+  <tr>
+    <th>메뉴</th>
+    <th>변경</th>
+  </tr>
+  {% for menu in menu_list %}
+    <tr>
+      <td>{{ menu }}</td>
+      <td>
+        <form action="/{{ local }}/store?sid={{ sid }}" method='POST'>
+          <input autofocus class="form-control" name="after_menu" placeholder="name1" type="text" value={{ menu }}>
+          <input type="hidden" name="before_menu" value = {{ menu }}>
+          <input type="hidden" name="sid" value = {{ sid }}>
+          <input type='submit' name="changeName" value='이름변경'>
+          <input type='submit' name="delete" value='삭제'>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+
+<form action="/{{ local }}/store?sid={{ sid }}" method='POST'>
+  <input autofocus class="form-control" name="added_menu" placeholder="새로운 메뉴" type="text" value="">
+  <input type="hidden" name="sid" value = {{ sid }}>
+  <input type='submit' name="add" value='추가하기'>
+</form>
+
+<h3>주문 info</h3>
+
+{% endblock %}

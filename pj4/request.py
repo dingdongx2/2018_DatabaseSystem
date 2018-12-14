@@ -2,20 +2,23 @@ from flask import Flask, render_template, redirect, request
 from sql import sqlQuery, sqlQuery_
 import csv
 
-def option(Form, local):
-    print(Form.get("name"))
-    print("local:",local,"\n\n\n")
-
+def option(Form, local, opt):
     type = search(local)
-    if type=="sellers":
-        print("request:seller")
-        option_p(Form, local) # Form : name/pwd & local : name
-    elif type=="deliveries":
-        print("")
-    elif type=="customers":
-        option_p(Form, local)
-    else:
-        print("error 07")
+    if opt=="edit_id":
+        print(Form.get("name"))
+        print("local:",local,"\n\n\n")
+        if type=="sellers":
+            print("request:seller")
+            option_p(Form, local) # Form : name/pwd & local : name
+        elif type=="deliveries":
+            print("")
+        elif type=="customers":
+            option_p(Form, local)
+        else:
+            print("error 07")
+    elif opt=="edit_store":
+        if type=="sellers":
+            option_s(Form, local)
 
 def search(local):
     print("/00")
@@ -43,6 +46,19 @@ def search(local):
             trial+=1
         else:
             return
+
+def option_s(Form, local): # about store
+    type = search(local)
+    if Form.get("changeName"):
+        sql = "UPDATE menues SET menu=\'{}\' WHERE menu=\'{}\' AND sid={}".format(Form.get("after_menu"),Form.get("before_menu"),Form.get("sid"))
+        sqlQuery(sql)
+        print(sql)
+    elif Form.get("delete"):
+        sql = "DELETE FROM menues WHERE menu=\'{}\' AND sid={}".format(Form.get("before_menu"),Form.get("sid"))
+        sqlQuery(sql)
+    elif Form.get("add"):
+        sql = "INSERT INTO menues VALUES (\'{}\', {})".format(Form.get("added_menu"),Form.get("sid"))
+        sqlQuery(sql)
 
 def option_p(Form, local): # name/pwd change
     type = search(local)

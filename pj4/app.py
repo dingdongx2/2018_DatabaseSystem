@@ -41,7 +41,7 @@ def login():
 @app.route("/<local>", methods=['POST','GET'])
 def portal(local):
     if request.method == 'POST':
-        option(request.form, local)
+        option(request.form, local, "edit_id")
 
     print("hi",local)
 
@@ -49,6 +49,7 @@ def portal(local):
     cur = conn.cursor()
 
     type = search(local)
+    print("type:",type)
     if type=="sellers":
         sql = "SELECT * FROM stores WHERE seller_id=(SELECT seller_id FROM sellers WHERE local=\'{}\');".format(local)
         storeInfo = sqlQuery_(sql)
@@ -108,6 +109,24 @@ def edit(local):
     else:
         print("error 02.")
         return render_template("/"+local+".html")
+
+@app.route("/<local>/store",methods=['GET','POST'])
+def store(local):
+    if request.method == 'POST':
+        print("request!!!!")
+        print("before:",request.form.get('before_menu'))
+        print("after:",request.form.get('after_menu'))
+        option(request.form, local, "edit_store")
+
+    sid = request.args.get('sid') # sid : store num
+    print("sid:",sid)
+    print("local:",local)
+    sql = "SELECT menu from menues WHERE sid={}".format(sid)
+    menues = sqlQuery_(sql)
+    menu_list = []
+    for menu in menues:
+        menu_list.append(menu[0])
+    return render_template("manage.html",menu_list = menu_list, sid=sid, local=local)
 
 @app.route('/p/<page_name>')
 def static_page(page_name):

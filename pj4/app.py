@@ -134,10 +134,13 @@ def store(local):
     sql = "SELECT tags from stores WHERE sid={}".format(sid)
     tmp = list(sqlQuery_(sql)[0])[0]
     print("~~!~!~!:",tmp)
-    tmp = json.loads(tmp)
-    print("tmp:",tmp)
-    tmp.remove('')
-    return render_template("manage.html",menu_list = menu_list, sid=sid, local=local, tag_list=tmp)
+    if tmp:
+        tmp = json.loads(tmp)
+        print("tmp:",tmp)
+        tmp.remove('')
+        return render_template("manage.html",menu_list = menu_list, sid=sid, local=local, tag_list=tmp)
+    else:
+        return render_template("manage.html",menu_list = menu_list, sid=sid, local=local, tag_list=[])
 
 @app.route('/p/<page_name>')
 def static_page(page_name):

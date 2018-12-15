@@ -45,28 +45,13 @@ def search(local):
 def option_tag(Form, local):
     type = search(local)
     if Form.get("delete_tag"):
-        sql = "SELECT tags FROM stores WHERE sid={}".format(Form.get("sid"))
-        tag_list = list(sqlQuery_(sql)[0])[0].replace('"','').replace(' ','')[1:][:-1].split(",")
-        print("01:",tag_list)
+        sql = "DELETE FROM store_tags WHERE sid={} AND name={}".format(Form.get("sid"),Form.get("tag"))
         print("{} 를 삭제하고 싶음".format(Form.get("tag")))
-        tag_list.remove(Form.get("tag"))
-        print("02:",tag_list)
-        sql = "UPDATE stores SET tags=\'{}\' WHERE sid={}".format(str(tag_list).replace("'",'"'),Form.get("sid"))
         sqlQuery(sql)
-        print(sql)
 
         # sqlQuery(sql)
     elif Form.get("add_tag"):
-        sql = "SELECT tags FROM stores WHERE sid={}".format(Form.get("sid"))
-        tag_list = list(sqlQuery_(sql)[0])[0].replace('"','').replace(' ','')[1:][:-1].split(",")
-        print("01:",tag_list)
-        print("{} 를 추가하고 싶음".format(Form.get("added_tag")))
-        if tag_list[0] == None:
-            tag_list = [Form.get("added_tag")]
-        else:
-            tag_list.append(Form.get("added_tag"))
-        print("02:",tag_list)
-        sql = "UPDATE stores SET tags=\'{}\' WHERE sid={}".format(str(tag_list).replace("'",'"'),Form.get("sid"))
+        sql = "INSERT INTO store_tags (sid, name) VALUES ({}, \'{}\') WHERE sid={}".format(Form.get("sid"),Form.get("tag"),Form.get("sid"))
         sqlQuery(sql)
         print(sql)
 
@@ -80,7 +65,7 @@ def option_store(Form, local): # about store
         sql = "DELETE FROM menues WHERE menu=\'{}\' AND sid={}".format(Form.get("before_menu"),Form.get("sid"))
         sqlQuery(sql)
     elif Form.get("add"):
-        sql = "INSERT INTO menues VALUES (\'{}\', {})".format(Form.get("added_menu"),Form.get("sid"))
+        sql = "INSERT INTO menues (menu, sid) VALUES (\'{}\', {})".format(Form.get("added_menu"),Form.get("sid"))
         sqlQuery(sql)
 
 def option_person(Form, local): # name/pwd change
@@ -88,8 +73,8 @@ def option_person(Form, local): # name/pwd change
     sql = "SELECT name, passwd FROM {} WHERE local=\'{}\'".format(type,local)
     personInfo = sqlQuery_(sql)
 
-    print("origin:",list(personInfo[0]))
-    print("after:",Form.get("name"),Form.get("password"))
+    # print("origin:",list(personInfo[0]))
+    # print("after:",Form.get("name"),Form.get("password"))
 
     if Form.get("save"):
         sql = "UPDATE {} SET name=\'{}\', passwd=\'{}\' WHERE local=\'{}\'".format(type,Form.get("name"),Form.get("password"),local)

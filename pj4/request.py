@@ -40,7 +40,7 @@ def search(local):
     personInfo = sqlQuery_(sql)
     if len(personInfo)>=1:
         return "customers"
-    return
+    return None
 
 def option_tag(Form, local):
     type = search(local)

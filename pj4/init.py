@@ -9,12 +9,6 @@ import base64
 
 conn_str = "dbname=soyoung"
 
-def stringToBase64(s):
-    return base64.b64encode(s.encode('utf-8'))
-
-def base64ToString(b):
-    return base64.b64decode(b).decode('utf-8')
-
 def sqlQuery(sql):
     conn = pg.connect(conn_str)
     cur = conn.cursor()
@@ -103,9 +97,6 @@ def putCustomer():
     cur.close()
     conn.commit()
 
-    sql = "SELECT * FROM customers;"
-    sqlQuery(sql)
-
 # delivery
 def putDelivery():
     # did;name;phone;local;domain;passwd;lat;lng;stock
@@ -144,20 +135,28 @@ def putStores():
     conn = pg.connect(conn_str)
     cur = conn.cursor()
     for store in stores:
-        # if "'" in store[2]: store[2].replace("'",'')
-        # sql = f"INSERT INTO stores VALUES ({store[0]},\'{store[1]}\',\'{store[2]}\',{store[3]},{store[4]},\'{store[5]}\',\'{store[6]}\',{store[7]});"
-        # print(sql)
-        # cur.execute(sql)
         cur.execute("INSERT INTO stores VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(store[0],store[1],store[2],store[3],store[4],store[5],store[6],store[7]))
     cur.close()
     conn.commit()
 
-    print("01")
     sql = "ALTER TABLE stores ADD COLUMN tags VARCHAR DEFAULT \'[]\'"
     sqlQuery(sql)
 
-    print("02")
-    sql = "SELECT * FROM stores;"
+    sql = """CREATE TABLE store_schedules (
+        schedule_id SERIAL PRIMARY KEY,
+        sid INTEGER,
+        day_no INTEGER,
+        holiday BOOLEAN,
+        opened INTEGER,
+        closed INTEGER
+    );"""
+    sqlQuery(sql)
+
+    sql = """CREATE TABLE store_tags (
+        tag_id SERIAL PRIMARY KEY,
+        sid INTEGER,
+        name VARCHAR
+    );"""
     sqlQuery(sql)
 
 # bank
@@ -191,15 +190,26 @@ def putMenu():
     menues = menues[1:]
 
     # create table
-    sql = "CREATE TABLE menues({} VARCHAR, {} INTEGER);".format(menu[0],menu[1])
+    sql = """CREATE TABLE menues (
+        menuid SERIAL PRIMARY KEY ,
+        menu VARCHAR,
+        sid INTEGER
+    );"""
+    sqlQuery(sql)
+
+    sql = """CREATE TABLE basket (
+        basket_id SERIAL PRIMARY KEY,
+        order_id INTEGER,
+        menuid INTEGER,
+        cnt INTEGER
+    );"""
     sqlQuery(sql)
 
     # insert values
     conn = pg.connect(conn_str)
     cur = conn.cursor()
     for m in menues:
-        # sql = "INSERT INTO menues VALUES (\'{m[0]}\',{m[1]});",{m[0],m[1]}
-        sql = "INSERT INTO menues VALUES (\'{}\',{});".format(m[0],m[1])
+        sql = "INSERT INTO menues (menu, sid) VALUES (\'{}\',{});".format(m[0],m[1])
         cur.execute(sql)
     cur.close()
     conn.commit()
@@ -208,19 +218,25 @@ def putMenu():
     sqlQuery(sql)
 
 def putOrder():
-    sql = "CREATE TABLE orders(sid INTEGER, deliver VARCHAR, status VARCHAR, menu VARCHAR, time TIMESTAMP, buying VARCHAR);"
+    sql = """CREATE TABLE orders(order_id INTEGER PRIMARY KEY,
+        sid INTEGER NOT NULL,
+        cid INTEGER NOT NULL,
+        status VARCHAR NOT NULL,
+        did INTEGER,
+        payment VARCHAR,
+        timestmp TIMESTAMP)"""
     sqlQuery(sql)
 
 def init():
     # delete all of database
     # dbName = ["sellers", "customers", "deliveries"]
-    dbName = ["sellers","customers","deliveries","banks", "menues", "stores"]
+    dbName = ["sellers","customers","deliveries","banks", "menues", "stores","store_schedules","store_tags","basket","orders"]
     for name in dbName:
         try:
             sql = "Drop Table {};".format(name)
             sqlQuery(sql)
         except:
-            continue
+            pass
     print("dropped all of database")
 
 init()
@@ -236,4 +252,5 @@ putMenu()
 print("menues fin")
 putStores()
 print("stores fin")
+putOrder()
 print("fin")

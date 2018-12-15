@@ -26,7 +26,6 @@ def login():
     email = request.form.get('email')
     passwd = request.form.get('passwd')
     tmp = email.split('@')
-    print("tmp:",tmp)
     local = tmp[0]
     domain = tmp[1]
 

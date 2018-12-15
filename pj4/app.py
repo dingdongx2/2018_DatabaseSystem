@@ -8,7 +8,7 @@ from form import contactsForm
 from request import option, search
 from sql import sqlQuery, sqlQuery_
 
-stores_menu = ["sid","address","sname","lat","lng","phone_nums","schedules","seller_id","tags"]
+stores_menu = ["sid","address","sname","lat","lng","phone_nums","seller_id","tags"]
 sellers_menu = ["seller_id","name","phone","local","domain","passwd"]
 customers_menu = ["name","phone","local","domain","passwd","payments","lat","lng"]
 app = Flask(__name__)

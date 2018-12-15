@@ -1,5 +1,4 @@
 
-
 CREATE TABLE orders
   (
     order_id INTEGER PRIMARY KEY,

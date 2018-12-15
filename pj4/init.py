@@ -37,14 +37,9 @@ def openCsv(filename, jsonExists):
         print(menu)
         res = [menu]
 
-        if jsonExists==1:
+        if jsonExists:
             for line in rdr:
                 line[5] = json.loads(line[5])
-                res.append(line)
-        elif jsonExists==2:
-            for line in rdr:
-                line[5] = json.loads(line[5])
-                line[6] = json.loads(line[6])
                 res.append(line)
         else:
             for line in rdr:
@@ -79,7 +74,7 @@ def putSeller():
 # customers
 def putCustomer():
     # name;phone;local;domain;passwd;payments;lat;lng
-    people = openCsv("customers",1)
+    people = openCsv("customers",True)
     menu = people[0]
     people = people[1:]
 
@@ -122,24 +117,12 @@ def putDelivery():
     sqlQuery(sql)
 
 def putStores():
-    # sid,address,sname,lat,lng,phone_nums,schedules,seller_id
-    stores = openCsv("stores",2)
-    menu = stores[0]
+    stores = openCsv("stores",True)
+    menu = ["sid","address","sname","lat","lng","phone_nums","seller_id","tags"]
     stores = stores[1:]
 
     # create table
-    sql = "CREATE TABLE stores({} INTEGER, {} VARCHAR, {} VARCHAR, {} FLOAT, {} FLOAT, {} VARCHAR, {} VARCHAR, {} INTEGER);".format(menu[0],menu[1],menu[2],menu[3],menu[4],menu[5],menu[6],menu[7])
-    sqlQuery(sql)
-
-    # insert values
-    conn = pg.connect(conn_str)
-    cur = conn.cursor()
-    for store in stores:
-        cur.execute("INSERT INTO stores VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(store[0],store[1],store[2],store[3],store[4],store[5],store[6],store[7]))
-    cur.close()
-    conn.commit()
-
-    sql = "ALTER TABLE stores ADD COLUMN tags VARCHAR DEFAULT \'[]\'"
+    sql = "CREATE TABLE stores({} INTEGER, {} VARCHAR, {} VARCHAR, {} FLOAT, {} FLOAT, {} VARCHAR, {} INTEGER, {} VARCHAR);".format(menu[0],menu[1],menu[2],menu[3],menu[4],menu[5],menu[6],menu[7])
     sqlQuery(sql)
 
     sql = """CREATE TABLE store_schedules (
@@ -151,6 +134,21 @@ def putStores():
         closed INTEGER
     );"""
     sqlQuery(sql)
+
+    # insert values
+    conn = pg.connect(conn_str)
+    cur = conn.cursor()
+    for store in stores:
+        cur.execute("INSERT INTO stores (sid,address,sname,lat,lng,phone_nums,seller_id) VALUES (%s,%s,%s,%s,%s,%s,%s)",(store[0],store[1],store[2],store[3],store[4],store[5],store[7]))
+        schedule = json.loads(store[6])
+        schedule = json.loads(schedule)
+        for day in schedule:
+            if not day['holiday']:
+                cur.execute("INSERT INTO store_schedules (sid,day_no,holiday,opened,closed) VALUES (%s,%s,%s,%s,%s)",(store[0],day['day'],day['holiday'],day['open'],day['closed']))
+            else:
+                cur.execute("INSERT INTO store_schedules (sid,day_no,holiday) VALUES (%s,%s,%s)",(store[0],day['day'],day['holiday']))
+    cur.close()
+    conn.commit()
 
     sql = """CREATE TABLE store_tags (
         tag_id SERIAL PRIMARY KEY,

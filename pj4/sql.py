@@ -6,22 +6,25 @@ import csv
 
 conn_str = "dbname=soyoung"
 
-def sqlQuery(sql):
+def sqlQuery(sql, param=None):
     conn = pg.connect(conn_str)
     cur = conn.cursor()
-    cur.execute(sql)
-    # rows = cur.fetchall()
-    # print(rows)
+    if param is None:
+        cur.execute(sql)
+    else:
+        cur.execute(sql, param)
+
     cur.close()
     conn.commit()
 
-def sqlQuery_(sql):
+def sqlQuery_(sql, param=None):
     conn = pg.connect(conn_str)
     cur = conn.cursor()
-    cur.execute(sql)
-
+    if param is None:
+        cur.execute(sql)
+    else:
+        cur.execute(sql, param)
     rows = cur.fetchall()
-    # print(rows)
 
     cur.close()
     conn.commit()

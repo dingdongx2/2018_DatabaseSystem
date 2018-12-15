@@ -207,6 +207,10 @@ def putMenu():
     sql = "SELECT * FROM menues;"
     sqlQuery(sql)
 
+def putOrder():
+    sql = "CREATE TABLE orders(sid INTEGER, deliver VARCHAR, status VARCHAR, menu VARCHAR, time TIMESTAMP, buying VARCHAR);"
+    sqlQuery(sql)
+
 def init():
     # delete all of database
     # dbName = ["sellers", "customers", "deliveries"]

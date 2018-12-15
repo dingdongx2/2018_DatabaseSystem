@@ -3,8 +3,9 @@ import psycopg2 as pg
 import psycopg2.extras
 import psycopg2.extensions
 import csv
+import json
 from form import contactsForm
-from request import option, start, search
+from request import option, search
 from sql import sqlQuery, sqlQuery_
 
 stores_menu = ["sid","address","sname","lat","lng","phone_nums","schedules","seller_id","tags"]
@@ -133,18 +134,11 @@ def store(local):
 
     sql = "SELECT tags from stores WHERE sid={}".format(sid)
     tmp = list(sqlQuery_(sql)[0])[0]
-    tmp = tmp.replace('"','').replace(' ','')[1:][:-1].split(",")
+    print("~~!~!~!:",tmp)
+    tmp = json.loads(tmp)
     print("tmp:",tmp)
-    if tmp[0]==None:
-        tags = ['None']
-    else:
-        tags = tmp
-    print("0.:",tags)
-    tag_list = []
-    for tag in tags:
-        tag_list.append(tag)
-
-    return render_template("manage.html",menu_list = menu_list, sid=sid, local=local, tag_list=tag_list)
+    tmp.remove('')
+    return render_template("manage.html",menu_list = menu_list, sid=sid, local=local, tag_list=tmp)
 
 @app.route('/p/<page_name>')
 def static_page(page_name):

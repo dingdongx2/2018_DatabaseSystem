@@ -9,23 +9,29 @@ import base64
 
 conn_str = "dbname=soyoung"
 
-def sqlQuery(sql):
+def sqlQuery(sql, param=None):
     conn = pg.connect(conn_str)
     cur = conn.cursor()
-    cur.execute(sql)
+    if param is None:
+        cur.execute(sql)
+    else:
+        cur.execute(sql, param)
 
     cur.close()
     conn.commit()
 
-def sqlQuery_(sql):
+def sqlQuery_(sql, param=None):
     conn = pg.connect(conn_str)
     cur = conn.cursor()
-    cur.execute(sql)
-
+    if param is None:
+        cur.execute(sql)
+    else:
+        cur.execute(sql, param)
     rows = cur.fetchall()
 
     cur.close()
     conn.commit()
+    return rows
 
 def openCsv(filename, jsonExists):
     filename = './csvFiles/' + filename + '.csv'
@@ -79,14 +85,22 @@ def putCustomer():
     people = people[1:]
 
     # create table
-    sql = "CREATE TABLE customers({} VARCHAR, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} VARCHAR, {} FLOAT, {} FLOAT);".format(menu[0],menu[1],menu[2],menu[3],menu[4],menu[5],menu[6],menu[7])
-    sqlQuery(sql)
+    sqlQuery("""CREATE TABLE customers(
+        cid SERIAL PRIMARY KEY,
+        name VARCHAR,
+        phone VARCHAR,
+        local VARCHAR,
+        domain VARCHAR,
+        passwd VARCHAR,
+        payment VARCHAR,
+        lat FLOAT,
+        lng FLOAT);""")
 
     # insert values
     conn = pg.connect(conn_str)
     cur = conn.cursor()
     for person in people:
-        sql = "INSERT INTO customers VALUES (\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},{});".format(person[0],person[1],person[2],person[3],person[4],person[5],person[6],person[7])
+        sql = "INSERT INTO customers (name, phone, local, domain, passwd, payment, lat, lng) VALUES (\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},{});".format(person[0],person[1],person[2],person[3],person[4],person[5],person[6],person[7])
         # sqlQuery(sql)
         cur.execute(sql)
     cur.close()
@@ -216,7 +230,7 @@ def putMenu():
     sqlQuery(sql)
 
 def putOrder():
-    sql = """CREATE TABLE orders(order_id INTEGER PRIMARY KEY,
+    sql = """CREATE TABLE orders(order_id SERIAL PRIMARY KEY,
         sid INTEGER NOT NULL,
         cid INTEGER NOT NULL,
         status VARCHAR NOT NULL,

@@ -75,7 +75,7 @@ CREATE TABLE basket (
 
 -- 주문 내역 (배송 완료 이후)
 SELECT O.order_id, S.sname, M.menu, O.payment, O.timestmp
-    FROM orders O, stores S, menues
+    FROM orders O, stores S, menues M
     WHERE O.cid = ? AND O.sid=S.sid AND O.menuid = M.menuid
         AND O.status = "completed"
     ORDER BY O.timestmp DESC;

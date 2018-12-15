@@ -4,86 +4,36 @@
 {% endblock %}
 
 {% block body %}
-<h1><가게이름> 관리 페이지</h1>
+<h1><가게이름>의 관리 페이지</h1>
 
-<h3>가게 info</h3>
+<h3>oid : {{ menu_info[0] }}주문 list</h3>
 
-<table>
-  <tr>
-    <th>태그</th>
-    <th>편집</th>
-  </tr>
-  {% for tag in tag_list %}
-    <tr>
-      <td>{{ tag }}</td>
-      <td>
-        <form action="/{{ local }}/store?sid={{ sid }}" method='POST'>
-          <input type="hidden" name="sid" value = {{ sid }}>
-          <input type="hidden" name="tags" value="null">
-          <input type="hidden" name="tag" value={{ tag }}>
-          <input type='submit' name="delete_tag" value='삭제'>
-        </form>
-      </td>
-    </tr>
-  {% endfor %}
-</table>
-<form action="/{{ local }}/store?sid={{ sid }}" method='POST'>
-  <input autofocus class="form-control" name="added_tag" placeholder="새로운 태그" type="text" value="">
-  <input type="hidden" name="sid" value = {{ sid }}>
-  <input type="hidden" name="tags" value="null">
-  <input type='submit' name="add_tag" value='추가하기'>
-</form>
-
-<h3>메뉴 info</h3>
-
-<table>
-  <tr>
-    <th>메뉴</th>
-    <th>변경</th>
-  </tr>
-  {% for menu in menu_list %}
-    <tr>
-      <td>{{ menu }}</td>
-      <td>
-        <form action="/{{ local }}/store?sid={{ sid }}" method='POST'>
-          <input autofocus class="form-control" name="after_menu" placeholder="name1" type="text" value={{ menu }}>
-          <input type="hidden" name="before_menu" value = {{ menu }}>
-          <input type="hidden" name="sid" value = {{ sid }}>
-          <input type='submit' name="changeName" value='이름변경'>
-          <input type='submit' name="delete" value='삭제'>
-        </form>
-      </td>
-    </tr>
-  {% endfor %}
-</table>
+<p>주문자:</p>
+<p>주소:</p>
 
 <form action="/{{ local }}/store?sid={{ sid }}" method='POST'>
-  <input autofocus class="form-control" name="added_menu" placeholder="새로운 메뉴" type="text" value="">
-  <input type="hidden" name="sid" value = {{ sid }}>
-  <input type='submit' name="add" value='추가하기'>
-</form>
-
-<h3>주문 info</h3>
-
-<table>
-  <tr>
-    <th>order id</th>
-    <th>status</th>
-    <th>주문 확인</th>
-  </tr>
-  <tr>
-    {% for order in order_list %}
-      <td>{{ order[0] }}</td>
-      <td>{{ order[1] }}</td>
-      <td>
-        <form action="/{{ local }}/store/order?oid={{ order[0] }}" method='POST'>
-          <input type="hidden" name="sid" value = {{ sid }}>
-          <input type="hidden" name="order_id" value = {{ order[0] }}>
-          <input type='submit' name="check" value='주문 확인'>
-        </form>
-      </td>
+  <table>
+    <tr>
+      <th>메뉴</th>
+      <th>수량</th>
+    </tr>
+    {% for menu in menu_info %}
+      <tr>
+        <td>{{ menu[0] }}</td>
+        <td>{{ menu[1] }}
+      </tr>
     {% endfor %}
-  </tr>
-</table>
+  </table>
+
+  <h3>배달원</h3>
+  {% for deliver in deliver_info %}
+    <input type="hidden" name="did" value={{ deliver[0] }}>
+    <input type="hidden" name="order_id" value={{ order_id }}>
+    <input type="radio" name="deliver" value={{ deliver[1] }}>{{ deliver[1] }}
+  {% endfor %}
+
+  <input type='submit' name="accept" value='주문 받기'>
+  <input type='submit' name="decline" value='주문 취소'>
+</form>
 
 {% endblock %}

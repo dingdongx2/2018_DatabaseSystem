@@ -7,10 +7,11 @@ import json
 from form import contactsForm
 from request import option, search
 from sql import sqlQuery, sqlQuery_
+import datetime
 
 stores_menu = ["sid","address","sname","lat","lng","phone_nums","seller_id","tags"]
 sellers_menu = ["seller_id","name","phone","local","domain","passwd"]
-customers_menu = ["name","phone","local","domain","passwd","payments","lat","lng"]
+customers_menu = ["cid","name","phone","local","domain","passwd","payments","lat","lng"]
 app = Flask(__name__)
 
 conn_str = "dbname=soyoung"
@@ -40,9 +41,10 @@ def login():
 # 2ekle2gw
 @app.route("/<local>", methods=['POST','GET'])
 def portal(local):
-    if request.method == 'POST':
-        option(request.form, local, "edit_id")
-
+    # if request.method == 'POST':
+    #     option(request.form, local, "edit_id")
+    if local == 'favicon.ico':
+        return ''
     print("hi",local)
 
     conn = pg.connect(conn_str)
@@ -51,15 +53,17 @@ def portal(local):
     type = search(local)
     print("type:",type)
     if type=="sellers":
-        sql = "SELECT * FROM stores WHERE seller_id=(SELECT seller_id FROM sellers WHERE local=\'{}\');".format(local)
-        storeInfo = sqlQuery_(sql)
-        sql = "SELECT * FROM sellers WHERE local=\'{}\'".format(local)
-        personInfo = sqlQuery_(sql)
+        storeInfo = sqlQuery_("""SELECT * FROM stores WHERE seller_id=(SELECT seller_id FROM sellers S WHERE S.local=%s);""",(local,))
+        personInfo = sqlQuery_("""SELECT * FROM sellers WHERE local=%s""",(local,))
         if len(personInfo)>=1:
             tmp = []
             for store in storeInfo:
                 tmp.append(list(store))
             rows = [[stores_menu,sellers_menu],tmp,list(personInfo[0])]
+
+        order_list = sqlQuery_("""SELECT order_id, status FROM orders WHERE sid = (SELECT sid FROM stores WHERE seller_id=(SELECT seller_id FROM sellers WHERE local=%s));""",(local,))[0]
+        print("~:",order_list)
+        return render_template("portal_s.html", info=rows,order_list=order_list)
 
     elif type=="deliveries":
         sql = f"SELECT * FROM deliveries WHERE local=\'{local}\';"
@@ -68,25 +72,99 @@ def portal(local):
         personInfo = sqlQuery_(sql)
         if len(personInfo)>=1:
             rows = [rows,personInfo]
+        return render_template("portal_d.html", info=rows)
 
     elif type=="customers":
         print("customers")
-        sql = "SELECT * FROM customers WHERE local=\'{}\'".format(local)
-        personInfo = sqlQuery_(sql)
+        personInfo = sqlQuery_("SELECT * FROM customers WHERE local=%s",(local,))
         if len(personInfo)>=1:
-            tmp = []
             rows = [customers_menu,list(personInfo[0])]
+
+        try:
+            orderComplete = sqlQuery_("""SELECT O.order_id, S.sname, M.menu, O.payment, O.timestmp
+                FROM orders O, stores S, menues M, basket B
+                WHERE O.cid = %s
+                    AND O.order_id = B.order_id AND B.menuid = M.menuid
+                    AND O.sid = S.sid
+                    AND O.status = 'completed'
+                ORDER BY O.timestmp DESC;""",(rows[1][0],))[0]
+        except IndexError:
+            orderComplete = []
+
+        print(".:",orderComplete)
+
+        try:
+            orderWaiting = sqlQuery_("""SELECT O.order_id, S.sname, M.menu, O.payment, O.timestmp, O.status
+                FROM orders O, stores S, menues M, basket B
+                WHERE O.cid = %s
+                    AND O.status IN ('waiting', 'delivering')
+                    AND B.menuid = M.menuid
+                    AND O.order_id = B.order_id AND O.sid=S.sid
+                ORDER BY O.timestmp DESC;""",(rows[1][0],))
+        except IndexError:
+            orderWaiting = []
+
+        print("...:",orderWaiting)
+
+        return render_template("portal_c.html", info=rows,orderComplete=orderComplete,orderWaiting=orderWaiting)
     else:
         print("error 06")
 
     return render_template("portal_"+type[0]+".html", info=rows)
 
+@app.route("/<local>/order",methods=['GET','POST'])
+def newOrder(local):
+    if request.method == 'POST':
+        option(request.form, local, "save_order")
+        return redirect("/"+local)
+
+    try:
+        tmp = sqlQuery_("""SELECT cid,lat,lng FROM customers WHERE local=%s""",(local,))[0]
+    except IndexError:
+        return redirect('/')
+
+    customer_info = []
+    for t in tmp:
+        customer_info.append(t)
+    print("customer:",customer_info)
+    dt = datetime.datetime.now()
+    print("~~~~~~~:",dt.hour)
+    if dt.hour==0:
+        timeNow = 2400+dt.minute
+    else:
+        timeNow = dt.hour*100+dt.minute
+
+    near_stores = sqlQuery_("""SELECT S.sid, (S.lat - C.lat)^2 + (S.lng - C.lng)^2 as distance, S.sname
+        FROM stores S, customers C, store_schedules SS
+        WHERE S.sid = SS.sid
+            AND day_no = %s AND SS.holiday = false AND SS.opened <= %s AND SS.closed >= %s
+            AND C.cid = %s
+        ORDER BY distance ASC
+        limit 100;""",(dt.weekday(),timeNow,timeNow,customer_info[0], ) )
+    print(near_stores)
+
+    return render_template("orderMenu.html",local=local,near_stores=near_stores)
+
+@app.route("/<local>/order/<sid>",methods=['GET','POST'])
+def orderWithId(local,sid):
+    menu_list = sqlQuery_("""SELECT M.menuid, M.menu FROM menues M, stores S WHERE S.sid=%s AND M.sid = S.sid;""",(sid,))
+    q = sqlQuery_("""SELECT payment FROM customers WHERE local=%s""",(local,))
+    payment_list = json.loads(q[0][0])
+    tmp = [[],[]]
+    print(";",payment_list)
+    # print(len(payment_list))
+    print(tmp)
+    return render_template("storeInfo.html",menu_list=menu_list,local=local,payment_list=payment_list)
+
 @app.route("/<local>/edit",methods=['GET','POST'])
 def edit(local):
     # id = request.args.get('local')
     type = search(local)
-    # print("id::::",id)
     print("LOCAL::::",local)
+
+    if request.method == 'POST':
+        option(request.form, local, "edit_id")
+        return redirect('/' + local)
 
     if type=="sellers":
         # print("id:",id)
@@ -103,7 +181,7 @@ def edit(local):
         head = ["id", "pwd"]
         sql = "SELECT * FROM customers WHERE local=\'{}\'".format(local)
         info = list(sqlQuery_(sql)[0])
-        info = [info[2],info[0],info[4]] # [local, name, pwd]
+        info = [info[3],info[1],info[5]] # [local, name, pwd]
         print("ready for edit:",info)
         return render_template("edit_p.html",info=info,head=head)
     else:
@@ -116,6 +194,10 @@ def store(local):
         print("10")
         if request.form.get('tags'):
             option(request.form, local, "edit_tag")
+        elif request.form.get('accept'):
+            option(request.form, local, "order_accept")
+        elif request.form.get('decline'):
+            option(request.form, local, "order_decline")
         else:
             print("request!!!!")
             print("before:",request.form.get('before_menu'))
@@ -126,21 +208,49 @@ def store(local):
     print("sid:",sid)
     print("local:",local)
 
-    sql = "SELECT menu from menues WHERE sid={}".format(sid)
-    menues = sqlQuery_(sql)
+    menues = sqlQuery_("""SELECT menu from menues WHERE sid=%s""",(sid,))
     menu_list = []
     for menu in menues: menu_list.append(menu[0])
 
-    sql = "SELECT tags from stores WHERE sid={}".format(sid)
-    tmp = list(sqlQuery_(sql)[0])[0]
-    print("~~!~!~!:",tmp)
-    if tmp:
-        tmp = json.loads(tmp)
-        print("tmp:",tmp)
-        tmp.remove('')
-        return render_template("manage.html",menu_list = menu_list, sid=sid, local=local, tag_list=tmp)
+    tags = sqlQuery_("""SELECT name from store_tags WHERE sid=%s""",(sid,))
+
+    oids = sqlQuery_("SELECT order_id, status FROM orders WHERE sid = %s",(sid,))
+    print(oids)
+    # order_list = []
+    # for id in oids: order_list.append(id[0])
+    # print(order_list)
+
+    if tags:
+        res = []
+        for t in tags: res.append(t[0])
+        return render_template("manage.html",menu_list = menu_list, sid=sid, local=local, tag_list=res, order_list=oids)
     else:
-        return render_template("manage.html",menu_list = menu_list, sid=sid, local=local, tag_list=[])
+        return render_template("manage.html",menu_list = menu_list, sid=sid, local=local, tag_list=[],order_list=oids)
+
+@app.route("/<local>/store/order",methods=['GET','POST'])
+def checkOrder(local):
+    if request.method == 'POST':
+        print("00")
+
+    order_id = request.form.get("order_id")
+    sid = request.form.get("sid")
+    print("order_id:",order_id)
+    menu_info = sqlQuery_("""SELECT M.menu, B.cnt
+        FROM menues M, basket B, orders O
+        WHERE O.order_id = %s
+            AND O.order_id = B.order_id
+            AND B.menuid = M.menuid;""",(order_id,))
+    print("menu_list:",menu_info)
+
+    deliver_info = sqlQuery_("""SELECT D.did, D.name, (D.lat - S.lat)^2 + (D.lng - S.lng)^2 AS distance
+        FROM deliveries D, stores S
+        WHERE D.stock < 5 AND S.sid = %s
+        ORDER BY distance ASC
+        limit 5;""",(sid,))
+    print("deliver_info:",deliver_info)
+    print("local:",local)
+
+    return render_template("sellerOrder.html",menu_info=menu_info,local=local,sid=sid,order_id=order_id,deliver_info=deliver_info)
 
 @app.route('/p/<page_name>')
 def static_page(page_name):

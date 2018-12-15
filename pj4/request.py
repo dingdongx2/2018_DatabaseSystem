@@ -1,31 +1,33 @@
 from flask import Flask, render_template, redirect, request
 from sql import sqlQuery, sqlQuery_
+import datetime
 import csv
+import psycopg2 as pg
+
+conn_str = "dbname=soyoung"
 
 def option(Form, local, opt):
     type = search(local)
     if opt=="edit_id":
-        print(Form.get("name"))
-        print("local:",local,"\n\n\n")
         if type=="sellers":
-            print("request:seller")
             option_person(Form, local) # Form : name/pwd & local : name
         elif type=="deliveries":
             print("")
         elif type=="customers":
             option_person(Form, local)
-        else:
-            print("error 07")
     elif opt=="edit_store":
         if type=="sellers":
-            option_store(Form, local)
-        else:
-            print("error 08")
+            option_menu(Form, local)
     elif opt=="edit_tag":
         if type=="sellers":
             option_tag(Form, local)
-        else:
-            print("error 09")
+    elif opt=="save_order":
+        option_saveOrder(Form,local)
+    elif opt=="order_accept":
+        option_accept(Form,local)
+    elif opt=="order_decline":
+        option_decline(Form,local)
+
 
 def search(local):
     sql = "SELECT * FROM sellers WHERE local=\'{}\'".format(local)
@@ -45,17 +47,17 @@ def search(local):
 def option_tag(Form, local):
     type = search(local)
     if Form.get("delete_tag"):
-        sql = "DELETE FROM store_tags WHERE sid={} AND name={}".format(Form.get("sid"),Form.get("tag"))
+        sqlQuery("DELETE FROM store_tags WHERE sid=%s AND name=%s",(Form.get("sid"),Form.get("tag")))
         print("{} 를 삭제하고 싶음".format(Form.get("tag")))
-        sqlQuery(sql)
 
         # sqlQuery(sql)
     elif Form.get("add_tag"):
-        sql = "INSERT INTO store_tags (sid, name) VALUES ({}, \'{}\') WHERE sid={}".format(Form.get("sid"),Form.get("tag"),Form.get("sid"))
+        sql = "INSERT INTO store_tags (sid, name) VALUES ({}, \'{}\')".format(Form.get("sid"),Form.get("added_tag"))
         sqlQuery(sql)
         print(sql)
 
-def option_store(Form, local): # about store
+def option_menu(Form, local): # about store
+    # TOFIX option_menu으로 함수 이름 바꾸기
     type = search(local)
     if Form.get("changeName"):
         sql = "UPDATE menues SET menu=\'{}\' WHERE menu=\'{}\' AND sid={}".format(Form.get("after_menu"),Form.get("before_menu"),Form.get("sid"))
@@ -82,3 +84,44 @@ def option_person(Form, local): # name/pwd change
         print("edit")
     else:
         print("cancel")
+
+def option_decline(Form, local):
+    # did = Form.get("did")
+    order_id = Form.get("order_id")
+    sqlQuery("""BEGIN TRANSACTION;
+        DELETE FROM orders WHERE order_id = %s;
+        DELETE FROM basket WHERE order_id = %s;
+        END TRANSACTION;""",(order_id, order_id))
+
+def option_accept(Form, local):
+    did = Form.get("did")
+    order_id = Form.get("order_id")
+    sqlQuery("""UPDATE orders SET did=%s, status='delivering' WHERE order_id = %s;""",(did, order_id))
+
+def option_saveOrder(Form, local):
+    menu_list = []
+    for key in Form.keys():
+        if key.startswith('menu_'):
+            menu_list.append([key[5:],Form.get(key)])
+    print("menu_list:",menu_list)
+
+    if Form.get("payAcc"):
+        print("account")
+        payment = "account"
+    elif Form.get("payCar"):
+        print("card")
+        payment = "card"
+
+    sqlQuery("""INSERT INTO orders(sid, cid, status, did, payment, timestmp)
+        SELECT M.sid, C.cid, 'waiting', NULL, %s, %s
+        FROM menues M, customers C
+        WHERE C.local=%s AND M.menuid=%s;""",(payment,datetime.datetime.now(),local,menu_list[0][0]))
+
+    conn = pg.connect(conn_str)
+    cur = conn.cursor()
+    for menu in menu_list:
+        cur.execute("""INSERT INTO basket (order_id, menuid, cnt)
+            SELECT MAX(O.order_id),%s,%s
+            FROM orders O""",(menu[0],menu[1]))
+    cur.close()
+    conn.commit()

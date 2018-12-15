@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block body %}
-<form action="/{{ info[0] }}" method="POST">
+<form action="/{{ info[0] }}/edit" method="POST">
   <div class="form-group">
     <input autofocus class="form-control" name="name" placeholder="name1" type="text" value={{ info[1] }}>
     <input autofocus class="form-control" name="password" placeholder="password1" type="password" value={{ info[2] }}>

@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+<h1><장바구니 넣기></h1>
+
+<form action="/{{ local }}/order" method='POST'>
+  <h3>[메뉴선택]</h3>
+  <table>
+    <tr>
+      <th>메뉴 아이디</th>
+      <th>메뉴 이름</th>
+      <th>수량</th>
+    </tr>
+    {% for menu in menu_list %}
+      <tr>
+        <td>{{ menu[0] }}</td>
+        <td>{{ menu[1] }}</td>
+        <td>
+          <input type='number' name = menu_{{ menu[0] }} value="0" placeholder="0">
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  <h3>[결제방식]</h3>
+  <table>
+    <tr>
+      <th>계좌/카드</th>
+      <th>선택</th>
+    </tr>
+    {% for payment in payment_list %}
+      <tr>
+        {% if payment.type=='account' %}
+          <td>[계좌] {{ payment.data.acc_num }}({{ payment.data.bid }})</td>
+          <td>
+            <input type="radio" name="payAcc" value={{ payment.data.acc_num }}>
+          </td>
+        {% else %}
+          <td>[카드] {{ payment.data.card_num }}</td>
+          <td>
+            <input type="radio" name="payCar" value={{ payment.data.card_num }}>
+          </td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </table>
+  <div class="btn-group">
+    <button type="submit" name="finOrder" class="btn btn-primary modify">결제하기</button>
+  </div>
+</form>
+
+{% endblock %}

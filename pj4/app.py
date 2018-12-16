@@ -69,15 +69,27 @@ def portal(local):
         return render_template("portal_s.html", info=rows,order_list=order_list)
 
     elif type=="deliveries":
-        sql = f"SELECT * FROM deliveries WHERE local=\'{local}\';"
-        rows = sqlQuery_(sql)
-        sql = "SELECT * FROM sellers WHERE local=\'{}\'".format(local)
-        personInfo = sqlQuery_(sql)
-        if len(personInfo)>=1:
-            rows = [rows,personInfo]
+        rows = sqlQuery_("""SELECT * FROM deliveries WHERE local=%s""",(local,))[0]
+        personInfo = sqlQuery_("""SELECT * FROM sellers WHERE local=%s""",(local,))
+        # if len(personInfo)>=1:
+        #     rows = [rows,personInfo]
 
+        try:
+            orderDelivering = sqlQuery_("""SELECT O.order_id, S.sname, M.menu, O.timestmp, O.status
+                FROM orders O, stores S, menues M, basket B, deliveries D
+                WHERE D.did = %s AND B.cnt >0
+                    AND O.status = 'delivering'
+                    AND B.menuid = M.menuid
+                    AND O.order_id = B.order_id AND O.sid=S.sid
+                    AND D.did=O.did
+                ORDER BY O.timestmp DESC;""",(rows[0],))
+        except IndexError:
+            orderDelivering = []
 
-        return render_template("portal_d.html", info=rows)
+        print(":::",orderDelivering)
+        print("info::",rows)
+
+        return render_template("portal_d.html", info=rows,orderDelivering=orderDelivering)
 
     elif type=="customers":
         if request.method == 'POST':

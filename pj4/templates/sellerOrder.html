@@ -32,10 +32,8 @@
     <input type="hidden" name="order_id" value={{ order_id }}>
     <input type="radio" name="deliver" value={{ deliver[1] }}>{{ deliver[1] }}
   {% endfor %}
-  {% if order_status == 'waiting' %}
-    <input type='submit' name="accept" value='주문 받기'>
-    <input type='submit' name="decline" value='주문 취소'>
-  {% endif %}
+  <input type='submit' name="accept" value='주문 받기'>
+  <input type='submit' name="decline" value='주문 취소'>
 </form>
 
 {% endblock %}

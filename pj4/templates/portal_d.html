@@ -7,4 +7,22 @@
 {% block body %}
 <h1>환영합니다! 배달부 {{ info[1] }}님! ^0^/</h1>
 
+<h3>주문 현황 (배송 완료 이전)</h3>
+<table>
+  <tr>
+    <th>주문한 가게 id</th>
+    <th>주문한 가게</th>
+    <th>메뉴</th>
+    <th>주문시간</th>
+    <th>주문한 상태</th>
+  </tr>
+  {% for order in orderDelivering %}
+    <tr>
+      {% for ord in order %}
+        <td>{{ ord }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+
 {% endblock %}

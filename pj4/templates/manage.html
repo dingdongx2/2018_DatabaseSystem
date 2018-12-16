@@ -71,8 +71,8 @@
     <th>status</th>
     <th>주문 확인</th>
   </tr>
-  <tr>
-    {% for order in order_list %}
+  {% for order in order_list %}
+    <tr>
       <td>{{ order[0] }}</td>
       <td>{{ order[1] }}</td>
       <td>
@@ -82,8 +82,8 @@
           <input type='submit' name="check" value='주문 확인'>
         </form>
       </td>
-    {% endfor %}
-  </tr>
+    </tr>
+  {% endfor %}
 </table>
 
 {% endblock %}

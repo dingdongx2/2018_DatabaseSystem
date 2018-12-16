@@ -9,21 +9,34 @@
 
 <h3>주소로 검색</h3>
 <form action="/{{ local }}/order/result" method='POST'>
-  <input type='text' name='address' placeholder="주소를 써주세요">
-  <input type='submit' value='검색하기'>
+  <div class="input-group mb-3">
+  <input type="text" class="address" placeholder="주소를 써 주세요"">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="submit">검색하기</button>
+  </div>
+</div>
 </form>
 
 <h3>가게명으로 검색</h3>
 <form action="/{{ local }}/order/result" method='POST'>
-  <input type='text' name='store_name' placeholder="가게명을 써주세요">
-  <input type='submit' value='검색하기'>
+  <div class="input-group mb-3">
+  <input type="text" class="store_name" placeholder="가게명을 써 주세요"">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="submit">검색하기</button>
+  </div>
+</div>
 </form>
 
 <h3>태그로 검색</h3>
 <form action="/{{ local }}/order/result" method='POST'>
-  <input type='text' name='tag' placeholder="태그를 써주세요">
-  <input type='submit' value='검색하기'>
+  <div class="input-group mb-3">
+  <input type="text" class="tag" placeholder="태그를 써 주세요"">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="submit">검색하기</button>
+  </div>
+</div>
 </form>
+
 
 <h3>가까운 가게 리스트</h3>
 <table class="table table-striped">

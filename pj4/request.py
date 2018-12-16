@@ -27,6 +27,8 @@ def option(Form, local, opt):
         option_accept(Form,local)
     elif opt=="order_decline":
         option_decline(Form,local)
+    elif opt=="delivery_fin":
+        option_deliveryFin(Form,local)
 
 
 def search(local):
@@ -97,6 +99,11 @@ def option_accept(Form, local):
     did = Form.get("did")
     order_id = Form.get("order_id")
     sqlQuery("""UPDATE orders SET did=%s, status='delivering' WHERE order_id = %s;""",(did, order_id))
+
+def option_deliveryFin(Form,local):
+    order_id = Form.get("order_id")
+    print("order~~id~~~:",order_id)
+    sqlQuery("""UPDATE orders SET status='completed' WHERE order_id=%s""",(order_id,))
 
 def option_saveOrder(Form, local):
     menu_list = []

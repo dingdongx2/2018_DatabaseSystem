@@ -30,9 +30,9 @@
 <h3>주문 내역 (배송 완료 이후)</h3>
 <table>
   <tr>
+    <th>주문한 가게 id</th>
     <th>주문한 가게</th>
     <th>메뉴</th>
-    <th>수량</th>
     <th>결제수단</th>
     <th>주문시간</th>
   </tr>
@@ -54,12 +54,31 @@
     <th>결제수단</th>
     <th>주문시간</th>
     <th>주문한 상태</th>
+    <th>배달원</th>
+    <th>배달완료</th>
   </tr>
+  {% for order in orderDelivering %}
+    <tr>
+      {% for ord in order %}
+        <td>{{ ord }}</td>
+      {% endfor %}
+      <td>
+        <form action="/{{ info[1][3] }}" method='POST'>
+          <input type="hidden" name="order_id" value={{ order[0] }}>
+          <div class="btn-group">
+            <button type="submit" name="deliver_fin" class="btn btn-primary modify">주문 완료</button>
+          </div>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
   {% for order in orderWaiting %}
     <tr>
       {% for ord in order %}
         <td>{{ ord }}</td>
       {% endfor %}
+      <td></td>
+      <td></td>
     </tr>
   {% endfor %}
 </table>

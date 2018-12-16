@@ -61,7 +61,10 @@ def portal(local):
                 tmp.append(list(store))
             rows = [[stores_menu,sellers_menu],tmp,list(personInfo[0])]
 
-        order_list = sqlQuery_("""SELECT order_id, status FROM orders WHERE sid = (SELECT sid FROM stores WHERE seller_id=(SELECT seller_id FROM sellers WHERE local=%s));""",(local,))[0]
+        try:
+            order_list = sqlQuery_("""SELECT order_id, status FROM orders WHERE sid = (SELECT sid FROM stores WHERE seller_id=(SELECT seller_id FROM sellers WHERE local=%s));""",(local,))[0]
+        except IndexError:
+            order_list = []
         print("~:",order_list)
         return render_template("portal_s.html", info=rows,order_list=order_list)
 
@@ -75,6 +78,10 @@ def portal(local):
         return render_template("portal_d.html", info=rows)
 
     elif type=="customers":
+        if request.method == 'POST':
+            option(request.form, local, "delivery_fin")
+            return redirect("/"+local)
+
         print("customers")
         personInfo = sqlQuery_("SELECT * FROM customers WHERE local=%s",(local,))
         if len(personInfo)>=1:
@@ -87,7 +94,7 @@ def portal(local):
                     AND O.order_id = B.order_id AND B.menuid = M.menuid
                     AND O.sid = S.sid
                     AND O.status = 'completed'
-                ORDER BY O.timestmp DESC;""",(rows[1][0],))[0]
+                ORDER BY O.timestmp DESC;""",(rows[1][0],))
         except IndexError:
             orderComplete = []
 
@@ -97,19 +104,33 @@ def portal(local):
             orderWaiting = sqlQuery_("""SELECT O.order_id, S.sname, M.menu, O.payment, O.timestmp, O.status
                 FROM orders O, stores S, menues M, basket B
                 WHERE O.cid = %s
-                    AND O.status IN ('waiting', 'delivering')
+                    AND O.status = 'waiting'
                     AND B.menuid = M.menuid
                     AND O.order_id = B.order_id AND O.sid=S.sid
                 ORDER BY O.timestmp DESC;""",(rows[1][0],))
         except IndexError:
             orderWaiting = []
 
-        print("...:",orderWaiting)
+        try:
+            orderDelivering = sqlQuery_("""SELECT O.order_id, S.sname, M.menu, O.payment, O.timestmp, O.status, D.name
+                FROM orders O, stores S, menues M, basket B, deliveries D
+                WHERE O.cid = %s
+                    AND O.status = 'delivering'
+                    AND B.menuid = M.menuid
+                    AND O.order_id = B.order_id AND O.sid=S.sid
+                    AND D.did=O.did
+                ORDER BY O.timestmp DESC;""",(rows[1][0],))
+        except IndexError:
+            orderDelivering = []
 
-        return render_template("portal_c.html", info=rows,orderComplete=orderComplete,orderWaiting=orderWaiting)
+        print("...:",orderWaiting)
+        print("//",orderDelivering)
+
+        return render_template("portal_c.html", info=rows,orderComplete=orderComplete,orderWaiting=orderWaiting,orderDelivering=orderDelivering)
     else:
         print("error 06")
 
+    row = []
     return render_template("portal_"+type[0]+".html", info=rows)
 
 @app.route("/<local>/order",methods=['GET','POST'])
@@ -250,7 +271,9 @@ def checkOrder(local):
     print("deliver_info:",deliver_info)
     print("local:",local)
 
-    return render_template("sellerOrder.html",menu_info=menu_info,local=local,sid=sid,order_id=order_id,deliver_info=deliver_info)
+    order_status = sqlQuery_("""SELECT status FROM orders WHERE order_id=%s""",(order_id,))
+
+    return render_template("sellerOrder.html",menu_info=menu_info,local=local,sid=sid,order_id=order_id,deliver_info=deliver_info,order_status=order_status)
 
 @app.route('/p/<page_name>')
 def static_page(page_name):

@@ -9,7 +9,7 @@
 
 <form action="/{{ local }}/order" method='POST'>
   <h3>[메뉴선택]</h3>
-  <table>
+  <table class="table table-striped">
     <tr>
       <th>메뉴 아이디</th>
       <th>메뉴 이름</th>
@@ -27,7 +27,7 @@
   </table>
 
   <h3>[결제방식]</h3>
-  <table>
+  <table class="table table-striped">
     <tr>
       <th>계좌/카드</th>
       <th>선택</th>
@@ -50,14 +50,14 @@
   </table>
 
   <div class="btn-group">
-    <button type="submit" name="finOrder" class="btn btn-primary modify">결제하기</button>
+    <button class="btn btn-secondary"  type="submit" name="finOrder" class="btn btn-primary modify">결제하기</button>
   </div>
 </form>
 
 <form action="/{{ local }}/order/payment" method='POST'>
   <div class="btn-group">
     <input type="hidden" name="sid" value={{ sid }}>
-    <button type="submit" name="editPayment" class="btn btn-primary modify">결제방식 바꾸기</button>
+    <button class="btn btn-secondary"  type="submit" name="editPayment" class="btn btn-primary modify">결제방식 바꾸기</button>
   </div>
 </form>
 

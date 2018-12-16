@@ -26,7 +26,7 @@
 </form>
 
 <h3>가까운 가게 리스트</h3>
-<table>
+<table class="table table-striped">
   <tr>
     <th>store_id</th>
     <th>가게 이름</th>
@@ -39,7 +39,7 @@
       <td>
         <form action="/{{ local }}/order/{{ store[0] }}" method="GET">
           <div class="btn-group">
-            <button type="submit" name="sid" value={{ store[0] }} class="btn btn-primary modify">선택하기</button>
+            <button class="btn btn-secondary"  type="submit" name="sid" value={{ store[0] }} class="btn btn-primary modify">선택하기</button>
           </div>
         </form>
       </td>

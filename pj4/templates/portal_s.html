@@ -8,7 +8,7 @@
 <h1>환영합니다! 판매자 {{ info[2][1] }}님! ^0^/</h1>
 
 <h3>personal info</h3>
-<table>
+<table class="table table-striped">
   <tr>
     {% for menu in info[0][1] %}
       <th>{{ menu }}</th>
@@ -23,12 +23,12 @@
 
 <form action="/{{ info[2][3] }}/edit" method="GET">
   <div class="btn-group">
-    <button type="submit" name="local" value="{{ info[1][3] }}" class="btn btn-primary modify">EDIT</button>
+    <button class="btn btn-secondary"  type="submit" name="local" value="{{ info[1][3] }}" class="btn btn-primary modify">EDIT</button>
   </div>
 </form>
 
 <h3>store list</h3>
-<table>
+<table class="table table-striped">
   <tr>
     {% for menu in info[0][0] %}
       <th>{{ menu }}</th>
@@ -43,7 +43,7 @@
       <td>
         <form action="/{{ info[2][3] }}/store" method="GET">
           <div class="btn-group">
-            <button type="submit" name="sid" value={{ store[0] }} class="btn btn-primary modify">관리하기</button>
+            <button class="btn btn-secondary"  type="submit" name="sid" value={{ store[0] }} class="btn btn-primary modify">관리하기</button>
           </div>
         </form>
       </td>

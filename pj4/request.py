@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request
 from sql import sqlQuery, sqlQuery_
 import datetime
 import csv
+import json
 import psycopg2 as pg
 
 conn_str = "dbname=soyoung"
@@ -29,6 +30,8 @@ def option(Form, local, opt):
         option_decline(Form,local)
     elif opt=="delivery_fin":
         option_deliveryFin(Form,local)
+    elif opt=="updatePayment":
+        option_updatePayment(Form,local)
 
 
 def search(local):
@@ -132,3 +135,100 @@ def option_saveOrder(Form, local):
             FROM orders O""",(menu[0],menu[1]))
     cur.close()
     conn.commit()
+
+def option_updatePayment(Form,local):
+    q = sqlQuery_("""SELECT payment FROM customers WHERE local=%s""",(local,))
+    payment_list = json.loads(q[0][0])
+
+    # account editing
+    if Form.get("edit_acc"):
+        origin_accNum = int(Form.get("origin_accNum"))
+        get_acc_num = int(Form.get("get_acc_num"))
+        get_acc_bid = int(Form.get("get_acc_bid"))
+
+        for payment in payment_list:
+            if payment['type'] == 'account' and payment['data']['acc_num'] == origin_accNum:
+                payment['data']['acc_num'] = get_acc_num
+                payment['data']['bid'] = get_acc_bid
+
+        tmp = json.dumps(payment_list)
+        sqlQuery("""UPDATE customers SET payment=%s WHERE local=%s""",(tmp,local))
+        print("require / account edit ::: ",origin_accNum,get_acc_num,get_acc_bid)
+
+    # card editing
+    elif Form.get("edit_card"):
+        origin_card = int(Form.get("origin_card"))
+        get_card_num = int(Form.get("get_card_num"))
+        for payment in payment_list:
+            if payment['type'] == 'card' and payment['data']['card_num'] == origin_card:
+                payment['data']['card_num'] = get_card_num
+
+        tmp = json.dumps(payment_list)
+        sqlQuery("""UPDATE customers SET payment=%s WHERE local=%s""",(tmp,local))
+        print("require / card edit ::: ",origin_card,get_card_num)
+
+    # account added
+    elif Form.get("add_acc"):
+        add_acc_num = int(Form.get("add_acc_num"))
+        add_acc_bid = int(Form.get("add_acc_bid"))
+        res = {
+            'type':'account',
+            'data':{
+                'bid':add_acc_bid,
+                'acc_num':add_acc_num
+            }
+        }
+        payment_list.append(res)
+        tmp = json.dumps(payment_list)
+        sqlQuery("""UPDATE customers SET payment=%s WHERE local=%s""",(tmp,local))
+        print("require / account add ::: ",add_acc_num,add_acc_bid)
+
+    # card added
+    elif Form.get("add_card"):
+        add_card_num = int(Form.get("add_card_num"))
+        res = {
+            'type':'card',
+            'data':{
+                'card_num':add_card_num
+            }
+        }
+        payment_list.append(res)
+        tmp = json.dumps(payment_list)
+        sqlQuery("""UPDATE customers SET payment=%s WHERE local=%s""",(tmp,local))
+
+    elif Form.get("del_acc"):
+        origin_accNum = int(Form.get("origin_accNum"))
+
+        print("::",payment_list)
+
+        idx = None
+        for i, payment in enumerate(payment_list):
+            if payment['type'] == 'account' and payment['data']['acc_num'] == origin_accNum:
+                idx = i
+        if idx is not None:
+            del(payment_list[idx])
+        else:
+            raise ValueError('삭제할 계좌 번호가 없음')
+
+        tmp = json.dumps(payment_list)
+        sqlQuery("""UPDATE customers SET payment=%s WHERE local=%s""",(tmp,local))
+
+    elif Form.get("del_card"):
+        origin_card = int(Form.get("origin_card"))
+
+        print("origin:",origin_card)
+        print("payment1:",payment_list)
+
+        idx = None
+        for i, payment in enumerate(payment_list):
+            if payment['type'] == 'card' and payment['data']['card_num'] == origin_card:
+                idx = i
+        print("idx:",idx)
+        if idx is not None:
+            del(payment_list[idx])
+        else:
+            raise ValueError('삭제할 카드 번호가 없음')
+
+        print("payment2:",payment_list)
+        tmp = json.dumps(payment_list)
+        sqlQuery("""UPDATE customers SET payment=%s WHERE local=%s""",(tmp,local))

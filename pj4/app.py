@@ -173,9 +173,23 @@ def orderWithId(local,sid):
     payment_list = json.loads(q[0][0])
     tmp = [[],[]]
     print(";",payment_list)
-    # print(len(payment_list))
+
+    payment=None
     print(tmp)
-    return render_template("storeInfo.html",menu_list=menu_list,local=local,payment_list=payment_list)
+    return render_template("storeInfo.html",menu_list=menu_list,local=local,payment_list=payment_list,payment=payment,sid=sid)
+
+@app.route("/<local>/order/payment",methods=['GET','POST'])
+def editPayment(local):
+    if request.method=='POST':
+        option(request.form, local, "updatePayment")
+
+    sid = request.form.get('sid')
+    print("I got sid!!",sid)
+
+    q = sqlQuery_("""SELECT payment FROM customers WHERE local=%s""",(local,))
+    payment_list = json.loads(q[0][0])
+    # sid =
+    return render_template("editPayment.html",local=local,sid=sid,payment_list=payment_list)
 
 @app.route("/<local>/order/result",methods=['GET','POST'])
 def searchResult(local):

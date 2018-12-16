@@ -25,12 +25,12 @@
       </tr>
     {% endfor %}
   </table>
+
   <h3>[결제방식]</h3>
   <table>
     <tr>
       <th>계좌/카드</th>
       <th>선택</th>
-      <th>변경</th>
     </tr>
     {% for payment in payment_list %}
       <tr>
@@ -39,40 +39,25 @@
           <td>
             <input type="radio" name="payAcc" value={{ payment.data.acc_num }}>
           </td>
-          <td>
-            <input autofocus class="form-control" name="get_acc_num" placeholder="새로운 메뉴" type="text" value="{{ payment.data.acc_num }}">
-            <input autofocus class="form-control" name="get_acc_bid" placeholder="새로운 메뉴" type="number" value="{{ payment.data.bid }}">
-            <input type="hidden" name="local" value={{ local }}>
-            <input type="hidden" name="origin_bid" value={{ payment.data.bid }}>
-            <input type='submit' name="edit_acc" value='변경하기'>
-          </td>
         {% else %}
           <td>[카드] {{ payment.data.card_num }}</td>
           <td>
             <input type="radio" name="payCar" value={{ payment.data.card_num }}>
-          </td>
-          <td>
-            <input autofocus class="form-control" name="get_card_num" placeholder="새로운 메뉴" type="text" value="{{ payment.data.card_num }}">
-            <input type="hidden" name="local" value={{ local }}>
-            <input type="hidden" name="origin_card" value={{ payment.data.card_num }}>
-            <input type='submit' name="edit_card" value='변경하기'>
           </td>
         {% endif %}
       </tr>
     {% endfor %}
   </table>
 
-  <input autofocus class="form-control" name="add_acc_num" placeholder="계좌 번호" type="text" value="">
-  <input autofocus class="form-control" name="add_acc_bid" placeholder="은행" type="text" value="">
-  <input type="hidden" name="local" value={{ local }}>
-  <input type='submit' name="add_acc" value='계좌 추가'>
-
-  <input autofocus class="form-control" name="add_card_num" placeholder="카드 번호" type="text" value="">
-  <input type="hidden" name="local" value={{ local }}>
-  <input type='submit' name="add_card" value='카드 추가'>
-
   <div class="btn-group">
     <button type="submit" name="finOrder" class="btn btn-primary modify">결제하기</button>
+  </div>
+</form>
+
+<form action="/{{ local }}/order/payment" method='POST'>
+  <div class="btn-group">
+    <input type="hidden" name="sid" value={{ sid }}>
+    <button type="submit" name="editPayment" class="btn btn-primary modify">결제방식 바꾸기</button>
   </div>
 </form>
 

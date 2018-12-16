@@ -177,6 +177,30 @@ def orderWithId(local,sid):
     print(tmp)
     return render_template("storeInfo.html",menu_list=menu_list,local=local,payment_list=payment_list)
 
+@app.route("/<local>/order/result",methods=['GET','POST'])
+def searchResult(local):
+    store_results = None
+    if request.method == 'POST':
+        res = request.form.get('address')
+        if res:
+            store_results = sqlQuery_("""SELECT sid, NULL, sname
+                FROM stores WHERE address LIKE %s""",('%%'+res+'%%',))
+
+        res = request.form.get('tag')
+        if res:
+            store_results = sqlQuery_("""SELECT T.sid, NULL, S.sname
+                FROM stores S, store_tags T
+                WHERE T.name LIKE %s AND T.sid=S.sid""",('%%'+res+'%%',))
+
+        res = request.form.get('store_name')
+        if res:
+            store_results = sqlQuery_("""SELECT sid, NULL, sname
+                FROM stores WHERE sname LIKE %s""",('%%'+res+'%%',))
+
+    if store_results is None:
+        store_results = []
+    return render_template("searchResult.html",store_results=store_results,local=local)
+
 @app.route("/<local>/edit",methods=['GET','POST'])
 def edit(local):
     # id = request.args.get('local')

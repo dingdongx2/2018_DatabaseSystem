@@ -75,6 +75,8 @@ def portal(local):
         personInfo = sqlQuery_(sql)
         if len(personInfo)>=1:
             rows = [rows,personInfo]
+
+
         return render_template("portal_d.html", info=rows)
 
     elif type=="customers":
@@ -90,11 +92,12 @@ def portal(local):
         try:
             orderComplete = sqlQuery_("""SELECT O.order_id, S.sname, M.menu, O.payment, O.timestmp
                 FROM orders O, stores S, menues M, basket B
-                WHERE O.cid = %s
+                WHERE O.cid = %s AND B.cnt >0
                     AND O.order_id = B.order_id AND B.menuid = M.menuid
                     AND O.sid = S.sid
                     AND O.status = 'completed'
                 ORDER BY O.timestmp DESC;""",(rows[1][0],))
+
         except IndexError:
             orderComplete = []
 
@@ -103,7 +106,7 @@ def portal(local):
         try:
             orderWaiting = sqlQuery_("""SELECT O.order_id, S.sname, M.menu, O.payment, O.timestmp, O.status
                 FROM orders O, stores S, menues M, basket B
-                WHERE O.cid = %s
+                WHERE O.cid = %s AND B.cnt >0
                     AND O.status = 'waiting'
                     AND B.menuid = M.menuid
                     AND O.order_id = B.order_id AND O.sid=S.sid
@@ -114,7 +117,7 @@ def portal(local):
         try:
             orderDelivering = sqlQuery_("""SELECT O.order_id, S.sname, M.menu, O.payment, O.timestmp, O.status, D.name
                 FROM orders O, stores S, menues M, basket B, deliveries D
-                WHERE O.cid = %s
+                WHERE O.cid = %s AND B.cnt >0
                     AND O.status = 'delivering'
                     AND B.menuid = M.menuid
                     AND O.order_id = B.order_id AND O.sid=S.sid
